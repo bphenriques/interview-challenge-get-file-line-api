@@ -1,4 +1,6 @@
-package com.salsify.lineserver.config
+package com.salsify.lineserver.common.enrichers
+
+import java.io.File
 
 import com.typesafe.config.Config
 
@@ -18,5 +20,7 @@ object ConfigEnricher {
       * @return Instance of [[T]]
       */
     def read[T](implicit parse: Config => Try[T]): Try[T] = parse(config)
+
+    def readFile(path: String): File = new File(config.getString(path))
   }
 }

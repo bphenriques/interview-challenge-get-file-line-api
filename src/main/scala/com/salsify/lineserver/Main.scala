@@ -4,8 +4,13 @@
 
 package com.salsify.lineserver
 
+import akka.actor.ActorSystem
+import akka.stream.ActorMaterializer
+import com.salsify.lineserver.config.AppConfig
+import com.typesafe.config.ConfigFactory
 import com.typesafe.scalalogging.LazyLogging
 
+import scala.concurrent.ExecutionContextExecutor
 import scala.util.{Failure, Success, Try}
 
 /**
@@ -15,18 +20,10 @@ import scala.util.{Failure, Success, Try}
   */
 object Main extends App with Application with LazyLogging {
 
-  if (args.length != 1) {
-    println("Usage: <file>")
-    System.exit(-1)
-  }
-
-  // Process arguments.
-  val filename = args(0)
-
-  val statusCode = process(filename) match {
+  val statusCode = start() match {
     case Success(_) => 0
     case Failure(exception) =>
-      logger.error(s"Error reading file $filename.", exception)
+      logger.error(s"Error while running application: ", exception)
       -1
   }
 
@@ -38,12 +35,19 @@ object Main extends App with Application with LazyLogging {
   */
 trait Application {
 
+  implicit val system: ActorSystem = ActorSystem("LineServer")
+
+  implicit val materializer: ActorMaterializer = ActorMaterializer()
+
+  implicit val executionContext: ExecutionContextExecutor = system.dispatcher
+
+  import com.salsify.lineserver.common.enrichers.ConfigEnricher._
+
   /**
     * TBD.
-    *
-    * @param filename The file to process.
     */
-  def process(filename: String): Try[Unit] = Try {
-
-  }
+  def start(): Try[_] = ConfigFactory.load().read[AppConfig](AppConfig.fromConfig)
+    .map(_.server)
+    .flatMap(_.setup())
+    .flatMap(_.start())
 }

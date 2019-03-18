@@ -2,7 +2,7 @@
  * © Copyright 2019 Bruno Henriques
  */
 
-package com.salsify.lineserver.exception
+package com.salsify.lineserver.common.exception
 
 /**
   * Generic Line Server exception.
@@ -10,7 +10,7 @@ package com.salsify.lineserver.exception
   * @param message    The message.
   * @param error      The error.
   */
-case class LineServerException(
+class LineServerException(
   message: String,
-  error: Throwable
+  error: Throwable = None.orNull
 ) extends Exception(message, error)

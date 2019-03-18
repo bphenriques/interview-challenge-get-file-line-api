@@ -22,3 +22,5 @@ test:
 package: clean
 	sbt universal:packageBin
 
+docker-publish:
+    sbt docker:publishLocal

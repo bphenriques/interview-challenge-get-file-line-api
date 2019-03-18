@@ -1,0 +1,45 @@
+version: "3.7"
+
+services:
+  client:
+    container_name: client
+    image: ${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_VERSION}
+    ports:
+    - 8080:8080
+    depends_on:
+      - shard1
+      - shard2
+    volumes:
+      - ./volumes/client.conf:/opt/docker/conf/application.conf
+      - ${FILE}:/tmp/file.txt
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  shard1:
+    container_name: shard1
+    image: ${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_VERSION}
+    ports:
+    - 9080:8080
+    volumes:
+      - ./volumes/shard.conf:/opt/docker/conf/application.conf
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  shard2:
+    container_name: shard2
+    image: ${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_VERSION}
+    ports:
+    - 9081:8080
+    volumes:
+      - ./volumes/shard.conf:/opt/docker/conf/application.conf
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5

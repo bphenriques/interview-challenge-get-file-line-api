@@ -1,4 +1,4 @@
-# Contributing Guide
+sbt # Contributing Guide
 
 This project is developed in Scala and [scala-sbt](https://www.scala-sbt.org/) as the build tool.
 

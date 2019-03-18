@@ -1,5 +1,6 @@
 import Dependencies._
 import com.typesafe.sbt.packager.archetypes.scripts.BashStartScriptPlugin.autoImport.bashScriptExtraDefines
+import com.typesafe.sbt.packager.docker.Cmd
 
 ThisBuild / scalaVersion     := "2.12.8"
 ThisBuild / organization     := "com.salsify"
@@ -19,13 +20,20 @@ lazy val root = (project in file("."))
       typeSafeConfig,
       scalaLogging,
       logbackClassic,
+      akkaHTTP,
+      akkaStream,
+      akkaCaching,
 
       // Dependencies wih Test scope.
-      scalaTest % Test
+      scalaTest % Test,
+      testContainersScala % Test,
+      akkaTest % Test,
+      akkaHttpTest % Test
     )
   )
   // Add packaging support.
   .enablePlugins(JavaAppPackaging)
+  .enablePlugins(DockerPlugin)
   .settings(packagingSettings)
 
 
@@ -53,3 +61,19 @@ lazy val packagingSettings = Seq(
   // Add -Dlogback.configurationFile to use the logback.xml configuration file in the conf folder.
   bashScriptExtraDefines += s"""addJava "-Dlogback.configurationFile=$${app_home}/../conf/logback.xml""""
 )
+
+dockerBaseImage := "openjdk:8-jre"
+dockerExposedPorts := Seq(8080)
+
+
+/**
+  * https://stackoverflow.com/questions/21464673/sbt-trapexitsecurityexception-thrown-at-sbt-run
+  */
+trapExit := false
+
+/*
+imageNames in docker := Seq(
+  ImageName("salsify/line-server:" + version.value),
+  ImageName("salsify/line-server:latest"),
+)
+*/
