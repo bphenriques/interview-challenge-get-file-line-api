@@ -8,6 +8,14 @@ import com.salsify.lineserver.shard.config.ShardServerConfig
 
 import scala.concurrent.ExecutionContext
 
+/**
+  * Creates a Shard server.
+  *
+  * @param config             The configuration.
+  * @param materializer       (implicit) The Akka actor materializer.
+  * @param system             (implicit) The Akka actor system.
+  * @param executionContext   (implicit) The execution context.
+  */
 class ShardServer(config: ShardServerConfig)(
   implicit val system: ActorSystem,
   implicit val materializer: ActorMaterializer,
@@ -15,8 +23,10 @@ class ShardServer(config: ShardServerConfig)(
 ) extends Server with ShardRoutes {
 
   override val host: String = config.binding.host
+
   override val port: Int = config.binding.port
 
   override val routes: Route = keyValueRoutes() ~ healthRoute()
+
   override val handler = new ShardResource()
 }

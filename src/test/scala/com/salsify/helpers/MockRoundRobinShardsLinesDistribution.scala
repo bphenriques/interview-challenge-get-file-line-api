@@ -22,7 +22,7 @@ class MockRoundRobinShardsLinesDistribution(numberOfShards: Int)(
 
   override def setup(lineSupplier: LinesInputSupplier): Future[Unit] = Future {
     lineSupplier.getLines().foreach { line =>
-      setInt(line.number, line.content)
+      setInt(line.index, line.content)
     }
   }
 }

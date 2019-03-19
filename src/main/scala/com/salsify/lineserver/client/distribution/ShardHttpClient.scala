@@ -13,15 +13,33 @@ import com.salsify.lineserver.shard.Shard
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success}
 
+/**
+  * Shard Http client.
+  *
+  * @param config           The configuration.
+  * @param materializer     (implicit) The Akka actor materializer.
+  * @param system           (implicit) The Akka actor system.
+  * @param executionContext (implicit) The execution context.
+  */
 class ShardHttpClient(config: HostConfig)(
   implicit val materializer: ActorMaterializer,
   implicit val system: ActorSystem,
   implicit val executionContext: ExecutionContext
 ) extends Shard {
 
+  /**
+    * Http client.
+    */
   private val http = Http()
 
+  /**
+    * Shard's host.
+    */
   val host: String = config.host
+
+  /**
+    * Shards port.
+    */
   val port: Int = config.port
 
   override def getInt(key: Int): Future[String] = {

@@ -7,13 +7,11 @@ import com.typesafe.scalalogging.LazyLogging
 import scala.io.Source
 
 /**
-  * TODO.
+  * Supplies lines from a local file. Each line is delimited by a new line character.
   *
-  * @param config Valid configuration file.
+  * @param config The configuration.
   */
 class LocalFileLinesInputSupplier(val config: LocalFileLinesInputSupplierConfig) extends LinesInputSupplier with LazyLogging {
-
-  override val description: String = s"LocalFileLineSupplier('${config.file.getAbsolutePath})"
 
   override val size: Int = Source.fromFile(config.file).getLines().length
 
@@ -25,10 +23,14 @@ class LocalFileLinesInputSupplier(val config: LocalFileLinesInputSupplierConfig)
       .zipWithIndex(1)
       .map { case (line, lineNumber) => Line(lineNumber, line) }
       .toStream // getLines() is already lazy. This is to conform to the method signature.
-
   }
+
+  override def toString: String = s"LocalFileLineSupplier('${config.file.getAbsolutePath})"
 }
 
+/**
+  * Companion object of [[LocalFileLinesInputSupplier]].
+  */
 object LocalFileLinesInputSupplier {
-  def fromConfig(config: LocalFileLinesInputSupplierConfig): LocalFileLinesInputSupplier = new LocalFileLinesInputSupplier(config)
+  def apply(config: LocalFileLinesInputSupplierConfig): LocalFileLinesInputSupplier = new LocalFileLinesInputSupplier(config)
 }

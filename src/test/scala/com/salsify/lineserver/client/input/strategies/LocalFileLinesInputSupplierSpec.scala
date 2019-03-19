@@ -19,7 +19,7 @@ class LocalFileLinesInputSupplierSpec extends BaseSpec {
     )
 
     forAll (rows) { (file: File, expectedLines: Seq[Line]) =>
-      val supplier = LocalFileLinesInputSupplier.fromConfig(LocalFileLinesInputSupplierConfig(file))
+      val supplier = LocalFileLinesInputSupplier.apply(LocalFileLinesInputSupplierConfig(file))
       supplier.size shouldEqual expectedLines.size
 
       val lines = supplier.getLines()

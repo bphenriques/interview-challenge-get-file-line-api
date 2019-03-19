@@ -24,11 +24,11 @@ The text file will have the following properties:
 
 You should submit a zip file or provide access to a public source code repository that contains shell scripts to build and run your system, documentation for your system, and the source code for the system itself.
 
-* build.sh - A script that can be invoked to build your system. This script may exit without doing anything if your system does not need to be compiled. You may invoke another tool such as Maven, Ant, etc. with this script. You may download and install any libraries or other programs you feel are necessary to help you build your system.
+* `build.sh` - A script that can be invoked to build your system. This script may exit without doing anything if your system does not need to be compiled. You may invoke another tool such as Maven, Ant, etc. with this script. You may download and install any libraries or other programs you feel are necessary to help you build your system.
 
-* run.sh - A script that takes a single command-line parameter which is the name of the file to serve. Ultimately, it should start the server you have built.
+* `run.sh` - A script that takes a single command-line parameter which is the name of the file to serve. Ultimately, it should start the server you have built.
 
-* README - A text file that answers the following questions:
+* `README` - A text file that answers the following questions:
 
   * How does your system work? (if not addressed in comments in source)
   * How will your system perform with a 1 GB file? a 10 GB file? a 100 GB file?

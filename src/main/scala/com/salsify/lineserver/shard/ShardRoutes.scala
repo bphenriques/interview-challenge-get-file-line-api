@@ -7,10 +7,25 @@ import com.typesafe.scalalogging.LazyLogging
 
 import scala.util.{Failure, Success}
 
+/**
+  * Akka routes that makes available the key-value store.
+  */
 trait ShardRoutes extends Directives with LazyLogging {
 
+  /**
+    * The routes handler.
+    */
   val handler: ShardResource
 
+  /**
+    * The `/key` endpoints.
+    * <ul>
+    *   <li>`GET /key/<index>`: Returns the String value at `<index>` with HTTP 200. Returns HTTP 404 if not found.</li>
+    *   <li>`SET /key/<index>`: Sets the body's content as the String value of `<index>`. Returns HTTP 200 if successful.</li>
+    * </ul>
+    *
+    * @return The `/key` endpoints.
+    */
   def keyValueRoutes(): Route = path("key" / IntNumber) { key =>
     get {
       onComplete(handler.getInt(key)) {
@@ -34,8 +49,10 @@ trait ShardRoutes extends Directives with LazyLogging {
     }
   }
 
-
-
+  /**
+    * The `/health` endpoint. Always returns HTTP 200.
+    * @return The `/health` endpoint.
+    */
   def healthRoute(): Route =
     path("health") {
       get {

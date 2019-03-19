@@ -1,6 +1,5 @@
 import Dependencies._
 import com.typesafe.sbt.packager.archetypes.scripts.BashStartScriptPlugin.autoImport.bashScriptExtraDefines
-import com.typesafe.sbt.packager.docker.Cmd
 
 ThisBuild / scalaVersion     := "2.12.8"
 ThisBuild / organization     := "com.salsify"
@@ -37,7 +36,7 @@ lazy val root = (project in file("."))
   .settings(packagingSettings)
 
 
-import NativePackagerHelper._
+import com.typesafe.sbt.SbtNativePackager.autoImport.NativePackagerHelper._
 lazy val packagingSettings = Seq(
   // Set main class.
   mainClass in Compile := Some("com.salsify.lineserver.Main"),

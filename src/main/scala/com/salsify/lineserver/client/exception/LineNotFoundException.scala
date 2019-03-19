@@ -2,5 +2,10 @@ package com.salsify.lineserver.client.exception
 
 import com.salsify.lineserver.common.exception.LineServerException
 
-case class LineNotFoundException(lineNumber: Long) extends LineServerException(s"Line not found: $lineNumber")
+/**
+  * Line not found exception.
+  *
+  * @param lineNumber The line number.
+  */
+case class LineNotFoundException(lineNumber: Int) extends LineServerException(s"Line not found: $lineNumber")
 

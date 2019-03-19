@@ -5,16 +5,18 @@ import com.salsify.lineserver.shard.exception.KeyNotFoundException
 import scala.collection.mutable
 import scala.concurrent.{ExecutionContext, Future}
 
+/**
+  * Handles [[ShardRoutes]].
+  *
+  * @param executionContext The execution context.
+  */
 class ShardResource(implicit val executionContext: ExecutionContext) extends Shard {
 
-  val keyValueMap: mutable.Map[Int, String] = mutable.Map()
-
   /**
-    * Does not validate.
-    *
-    * @param key
-    * @return
+    * The set of lines stored in this shard.
     */
+  private val keyValueMap: mutable.Map[Int, String] = mutable.Map()
+
   override def getInt(key: Int): Future[String] = Future {
     keyValueMap.get(key) match {
       case Some(line) => line

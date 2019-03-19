@@ -5,9 +5,16 @@ import com.salsify.lineserver.shard.Shard
 
 import scala.concurrent.Future
 
-trait LinesDistributionConfig
+/**
+  * Interface to distribute lines and access them.
+  */
 trait LinesDistribution extends Shard {
-  def description: String
 
+  /**
+    * Perform any necessary setup operations.
+    *
+    * @param lineSupplier The line supplier.
+    * @return The future when the setup has completed.
+    */
   def setup(lineSupplier: LinesInputSupplier): Future[Unit]
 }

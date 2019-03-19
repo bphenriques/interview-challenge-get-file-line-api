@@ -21,6 +21,12 @@ object ConfigEnricher {
       */
     def read[T](implicit parse: Config => Try[T]): Try[T] = parse(config)
 
+    /**
+      * Reads a file in the path specified.
+      *
+      * @param path The path.
+      * @return The file at the path specific.
+      */
     def readFile(path: String): File = new File(config.getString(path))
   }
 }

@@ -12,11 +12,10 @@ import com.typesafe.config.Config
 import scala.concurrent.ExecutionContext
 import scala.util.Try
 
-trait ServerConfig
-
-
 /**
-  * The Application configuration.
+  * The Application's configuration.
+  *
+  * @param server The server.
   */
 final case class AppConfig(server: Server)
 
@@ -26,10 +25,13 @@ final case class AppConfig(server: Server)
 object AppConfig {
 
   /**
-    * Creates a [[AppConfig]].
+    * Creates an instance of [[AppConfig]].
     *
-    * @param conf The configuration.
-    * @return The instance of [[AppConfig]].
+    * @param conf             The configuration.
+    * @param materializer     (implicit) The Akka actor materializer.
+    * @param system           (implicit) The Akka actor system.
+    * @param executionContext (implicit) The execution context.
+    * @return An instance of [[AppConfig]].
     */
   def fromConfig(conf: Config)(implicit
     materializer: ActorMaterializer,

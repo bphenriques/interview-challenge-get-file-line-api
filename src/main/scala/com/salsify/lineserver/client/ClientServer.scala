@@ -10,6 +10,14 @@ import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, ExecutionContext}
 import scala.util.Try
 
+/**
+  * Creates a Client server.
+  *
+  * @param config             The configuration.
+  * @param materializer       (implicit) The Akka actor materializer.
+  * @param system             (implicit) The Akka actor system.
+  * @param executionContext   (implicit) The execution context.
+  */
 class ClientServer(config: ClientServerConfig)(
   implicit val system: ActorSystem,
   implicit val materializer: ActorMaterializer,
@@ -17,13 +25,20 @@ class ClientServer(config: ClientServerConfig)(
 ) extends Server with ClientRoutes {
 
   override val host: String = config.binding.host
+
   override val port: Int = config.binding.port
 
   override val routes: Route = healthRoute() ~ linesRoutes()
 
-  private val lineSupplier = config.lineSupplier
+  /**
+    * The strategy used to setup the cluster with lines.
+    */
+  private val lineSupplier = config.linesSupplier
 
-  private val linesDistribution = config.lineDistribution
+  /**
+    * The strategy used to distribute the lines across the cluster.
+    */
+  private val linesDistribution = config.linesDistribution
 
   override val handler: ClientResource = new ClientResource(lineSupplier, linesDistribution)
 

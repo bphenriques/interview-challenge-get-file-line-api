@@ -2,7 +2,16 @@ package com.salsify.lineserver.client.exception
 
 import com.salsify.lineserver.common.exception.LineServerException
 
-case class ShardUploadException(
+/**
+  * Single shard upload exception.
+  *
+  * @param host       The shard's host.
+  * @param port       The shard's port.
+  * @param lineNumber The line number.
+  * @param line       The content of the line.
+  * @param error      The error.
+  */
+case class DistributionShardUploadException(
   host: String,
   port: Int,
   lineNumber: Long,

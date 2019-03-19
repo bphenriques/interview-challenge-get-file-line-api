@@ -35,16 +35,25 @@ object Main extends App with Application with LazyLogging {
   */
 trait Application {
 
+  /**
+    * The Akka actor system.
+    */
   implicit val system: ActorSystem = ActorSystem("LineServer")
 
+  /**
+    * The Akka actor materializer.
+    */
   implicit val materializer: ActorMaterializer = ActorMaterializer()
 
+  /**
+    * The execution context.
+    */
   implicit val executionContext: ExecutionContextExecutor = system.dispatcher
 
   import com.salsify.lineserver.common.enrichers.ConfigEnricher._
 
   /**
-    * TBD.
+    * Starts the application.
     */
   def start(): Try[_] = ConfigFactory.load().read[AppConfig](AppConfig.fromConfig)
     .map(_.server)

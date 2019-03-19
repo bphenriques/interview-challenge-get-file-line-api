@@ -31,7 +31,7 @@ class BaseSpec extends FlatSpec with Matchers with TableDrivenPropertyChecks wit
   val LocalhostConfig = HostConfig("localhost", 8080)
 
   val SampleLinesProviderConfig = LocalFileLinesInputSupplierConfig(getResource("sample.txt"))
-  val SampleLinesProvider = LocalFileLinesInputSupplier.fromConfig(SampleLinesProviderConfig)
+  val SampleLinesProvider = LocalFileLinesInputSupplier.apply(SampleLinesProviderConfig)
 
   val SampleLinesDistribution = new MockRoundRobinShardsLinesDistribution(3)
   SampleLinesDistribution.setup(SampleLinesProvider)

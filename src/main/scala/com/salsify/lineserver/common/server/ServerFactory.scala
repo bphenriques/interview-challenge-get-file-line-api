@@ -3,18 +3,31 @@ package com.salsify.lineserver.common.server
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
 import com.salsify.lineserver.client.ClientServer
-import com.salsify.lineserver.shard.config.ShardServerConfig
-import com.salsify.lineserver.config.AppConfig
 import com.salsify.lineserver.client.config.ClientServerConfig
+import com.salsify.lineserver.common.exception.LineServerConfigException
 import com.salsify.lineserver.shard.ShardServer
+import com.salsify.lineserver.shard.config.ShardServerConfig
 import com.typesafe.config.Config
 
 import scala.concurrent.ExecutionContext
 import scala.util.Try
 
+/**
+  * Factory of [[Server]].
+  */
 object ServerFactory {
 
   import com.salsify.lineserver.common.enrichers.ConfigEnricher._
+
+  /**
+    * Creates an instance of [[Server]] given a [[Config]].
+    *
+    * @param conf             The configuration.
+    * @param materializer     (implicit) The Akka actor materializer.
+    * @param system           (implicit) The Akka actor system.
+    * @param executionContext (implicit) The execution context.
+    * @return An instance of [[Server]].
+    */
   def from(conf: Config)(implicit
     materializer: ActorMaterializer,
     system: ActorSystem,
@@ -25,11 +38,13 @@ object ServerFactory {
         .read[ClientServerConfig](ClientServerConfig.fromConfig)
         .map(c => new ClientServer(c))
         .get
+
       case "shard" => conf.getConfig("shard")
         .read[ShardServerConfig](ShardServerConfig.fromConfig)
         .map(c => new ShardServer(c))
         .get
-      case server => throw new InternalError(s"Unrecognized server type: '$server'")
+
+      case server => throw LineServerConfigException(s"Unrecognized server type: '$server'")
     }
   }
 }
