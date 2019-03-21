@@ -33,7 +33,7 @@ object AppConfig {
     * @param executionContext (implicit) The execution context.
     * @return An instance of [[AppConfig]].
     */
-  def fromConfig(conf: Config)(implicit
+  def from(conf: Config)(implicit
     materializer: ActorMaterializer,
     system: ActorSystem,
     executionContext: ExecutionContext

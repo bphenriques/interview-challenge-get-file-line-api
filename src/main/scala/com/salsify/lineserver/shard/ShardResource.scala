@@ -10,7 +10,7 @@ import scala.concurrent.{ExecutionContext, Future}
   *
   * @param executionContext The execution context.
   */
-class ShardResource(implicit val executionContext: ExecutionContext) extends Shard {
+final class ShardResource(implicit val executionContext: ExecutionContext) extends Shard {
 
   /**
     * The set of lines stored in this shard.

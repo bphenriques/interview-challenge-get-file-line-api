@@ -35,12 +35,12 @@ object ServerFactory {
   ): Try[Server] = Try {
     conf.getString("type") match {
       case "client" => conf.getConfig("client")
-        .read[ClientServerConfig](ClientServerConfig.fromConfig)
+        .read[ClientServerConfig](ClientServerConfig.from)
         .map(c => new ClientServer(c))
         .get
 
       case "shard" => conf.getConfig("shard")
-        .read[ShardServerConfig](ShardServerConfig.fromConfig)
+        .read[ShardServerConfig](ShardServerConfig.from)
         .map(c => new ShardServer(c))
         .get
 

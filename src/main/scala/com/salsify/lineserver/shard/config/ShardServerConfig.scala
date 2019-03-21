@@ -10,7 +10,7 @@ import scala.util.Try
   *
   * @param binding The binding configuration.
   */
-case class ShardServerConfig(binding: HostConfig)
+final case class ShardServerConfig(binding: HostConfig)
 
 /**
   * Companion class of [[ShardServerConfig]].
@@ -25,7 +25,7 @@ object ShardServerConfig {
     * @param conf The configuration.
     * @return An instance of [[ShardServerConfig]].
     */
-  def fromConfig(conf: Config): Try[ShardServerConfig] = for {
-    binding        <- conf.getConfig("http").read[HostConfig](HostConfig.fromConfig)
+  def from(conf: Config): Try[ShardServerConfig] = for {
+    binding        <- conf.getConfig("http").read[HostConfig](HostConfig.from)
   } yield ShardServerConfig(binding)
 }

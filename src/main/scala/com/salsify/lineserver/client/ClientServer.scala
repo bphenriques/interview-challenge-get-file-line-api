@@ -18,7 +18,7 @@ import scala.util.Try
   * @param system             (implicit) The Akka actor system.
   * @param executionContext   (implicit) The execution context.
   */
-class ClientServer(config: ClientServerConfig)(
+final class ClientServer(config: ClientServerConfig)(
   implicit val system: ActorSystem,
   implicit val materializer: ActorMaterializer,
   implicit val executionContext: ExecutionContext,
@@ -42,10 +42,8 @@ class ClientServer(config: ClientServerConfig)(
 
   override val handler: ClientResource = new ClientResource(lineSupplier, linesDistribution)
 
-  override def setup(): Try[Server] = Try {
+  override def setup(): Try[Unit] = Try {
     val fileUpload = linesDistribution.setup(lineSupplier)
     Await.result(fileUpload, Duration.Inf)
-
-    this
   }
 }

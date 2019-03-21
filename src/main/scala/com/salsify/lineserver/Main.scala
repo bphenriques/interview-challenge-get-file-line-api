@@ -55,8 +55,7 @@ trait Application {
   /**
     * Starts the application.
     */
-  def start(): Try[_] = ConfigFactory.load().read[AppConfig](AppConfig.fromConfig)
+  def start(): Try[_] = ConfigFactory.load().read[AppConfig](AppConfig.from)
     .map(_.server)
-    .flatMap(_.setup())
     .flatMap(_.start())
 }

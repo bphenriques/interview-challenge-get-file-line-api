@@ -7,5 +7,5 @@ import com.salsify.lineserver.common.exception.LineServerException
   *
   * @param lineNumber The line number.
   */
-case class LineNotFoundException(lineNumber: Int) extends LineServerException(s"Line not found: $lineNumber")
+final case class LineNotFoundException(lineNumber: Int) extends LineServerException(s"Line not found: $lineNumber")
 

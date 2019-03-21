@@ -13,7 +13,7 @@ import scala.concurrent.Future
   * @param linesInputSupplier The lines supplier.
   * @param linesDistribution  The strategy used to distribute the lines.
   */
-class ClientResource(
+final class ClientResource(
   linesInputSupplier: LinesInputSupplier,
   linesDistribution: LinesDistribution
 ) extends Client with LazyLogging {

@@ -3,8 +3,14 @@ package com.salsify.lineserver.shard
 import com.salsify.helpers.BaseSpec
 import com.salsify.lineserver.shard.exception.KeyNotFoundException
 
+/**
+  * Tests for [[ShardResource]].
+  */
 class ShardResourceSpec extends BaseSpec {
 
+  /**
+    * Variable in test.
+    */
   val ShardResource = new ShardResource()
 
   it must "reject keys if they were not inserted before" in {

@@ -23,3 +23,4 @@ trait LinesInputSupplier {
     */
   def size: Int
 }
+

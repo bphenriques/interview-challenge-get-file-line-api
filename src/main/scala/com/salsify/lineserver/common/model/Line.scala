@@ -6,6 +6,6 @@ package com.salsify.lineserver.common.model
   * @param index    The positive line index.
   * @param content  The content of the line.
   */
-case class Line(index: Int, content: String) {
+final case class Line(index: Int, content: String) {
   require(index > 0)
 }

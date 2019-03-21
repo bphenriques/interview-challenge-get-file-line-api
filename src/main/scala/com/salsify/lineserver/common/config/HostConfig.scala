@@ -11,7 +11,7 @@ import scala.util.Try
   * @param port A port between 1023 and 65535
   * @see https://en.wikipedia.org/wiki/List_of_TCP_and_UDP_port_numbers
   */
-case class HostConfig(host: String, port: Int) {
+final case class HostConfig(host: String, port: Int) {
   require(host.trim.length > 0, "The must be non-empty")
   require(port > 1023 && port <= 65535, "The port must be between 1023 and 65535")
 }
@@ -27,7 +27,7 @@ object HostConfig {
     * @param conf The config.
     * @return An instance of [[HostConfig]].
     */
-  def fromConfig(conf: Config): Try[HostConfig] = for {
+  def from(conf: Config): Try[HostConfig] = for {
     host <- Try(conf.getString("host"))
     port <- Try(conf.getInt("port"))
   } yield HostConfig(host, port)

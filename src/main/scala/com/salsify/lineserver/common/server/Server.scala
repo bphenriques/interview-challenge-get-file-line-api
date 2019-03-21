@@ -53,33 +53,39 @@ trait Server extends LazyLogging {
   /**
     * The server's routes.
     */
-  def routes: Route
+  protected def routes: Route
 
   /**
     * Perform any necessary operations before starting. Defaults to noop.
     */
-  def setup(): Try[Server] = Success(this)
+  protected def setup(): Try[Unit] = Success()
 
   /**
     * Starts the server. This operation is blocking until the process is closed.
     */
   final def start(): Try[Server] = Try {
+    logger.info("Setting up server...")
+    setup()
+
     logger.info("Starting server...")
     val binding: Future[Http.ServerBinding] = Http().bindAndHandle(routes, host, port)
 
+    // Add coordinated shutdown that terminates the server gracefully on server shutdown. See notes on the class.
     CoordinatedShutdown(system).addTask(
       CoordinatedShutdown.PhaseServiceUnbind, "http_shutdown") { () =>
       shutdown(binding)
     }
 
+    // Verify if the server started successfully. Gracefully shutdown if not.
     binding.onComplete {
       case Success(bound) =>
         logger.info(s"Server available at ${bound.localAddress.getHostString}:${bound.localAddress.getPort}")
       case Failure(e) =>
         logger.error("Server failed to start", e)
-        system.terminate()
+        shutdown(binding)
     }
 
+    // Blocking the call
     Await.result(system.whenTerminated, Duration.Inf)
     this
   }
@@ -90,7 +96,7 @@ trait Server extends LazyLogging {
     * @param binding The server binding.
     * @return Future that signals completion.
     */
-  private def shutdown(binding: Future[Http.ServerBinding]): Future[Done] = {
+  final def shutdown(binding: Future[Http.ServerBinding]): Future[Done] = {
     logger.info("Shutting down...")
     binding
       .flatMap(_.terminate(hardDeadline = 1.minute))

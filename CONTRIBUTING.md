@@ -69,3 +69,14 @@ TBD.
 #### Create merge requests
 
 TBD.
+
+#### Tip: Quickly generate a 1GB file.
+
+1. Create a seed file with two lines:
+
+    ```
+    Blue
+    Green
+    ```
+
+2. Execute the following command that will generate the 

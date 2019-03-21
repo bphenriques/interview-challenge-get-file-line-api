@@ -22,7 +22,7 @@ object LinesInputSupplierFactory {
   def from(conf: Config): Try[LinesInputSupplier] = Try {
     conf.getString("type") match {
       case "local-file" => conf.getConfig("local-file")
-        .read[LocalFileLinesInputSupplierConfig](LocalFileLinesInputSupplierConfig.fromConfig)
+        .read[LocalFileLinesInputSupplierConfig](LocalFileLinesInputSupplierConfig.from)
         .map(LocalFileLinesInputSupplier.apply)
         .get
 

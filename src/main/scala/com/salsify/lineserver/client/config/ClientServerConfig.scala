@@ -17,7 +17,7 @@ import scala.util.Try
   * @param linesSupplier      The lines supplier.
   * @param linesDistribution  The strategy used to distribute the lines.
   */
-case class ClientServerConfig(
+final case class ClientServerConfig(
   binding: HostConfig,
   linesSupplier: LinesInputSupplier,
   linesDistribution: LinesDistribution
@@ -39,12 +39,12 @@ object ClientServerConfig {
     * @param executionContext (implicit) The execution context.
     * @return An instance of [[ClientServerConfig]].
     */
-  def fromConfig(conf: Config)(implicit
+  def from(conf: Config)(implicit
     materializer: ActorMaterializer,
     system: ActorSystem,
     executionContext: ExecutionContext
   ): Try[ClientServerConfig] = for {
-    httpConfig        <- conf.getConfig("http").read[HostConfig](HostConfig.fromConfig)
+    httpConfig        <- conf.getConfig("http").read[HostConfig](HostConfig.from)
     lineSupplier      <- LinesInputSupplierFactory.from(conf.getConfig("input"))
     lineDistribution  <- LinesDistributionFactory.from(conf.getConfig("distribution"))
   } yield ClientServerConfig(httpConfig, lineSupplier, lineDistribution)

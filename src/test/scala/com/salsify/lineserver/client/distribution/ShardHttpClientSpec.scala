@@ -2,30 +2,35 @@ package com.salsify.lineserver.client.distribution
 
 import com.salsify.helpers.BaseSpec
 
+/**
+  * Tests [[ShardHttpClient]].
+  */
 class ShardHttpClientSpec extends BaseSpec {
 
-  private val HostA = createShardClient("hostA", 8080)
-  private val HostADup = createShardClient("hostA", 8080)
-  private val HostADifferentPort = createShardClient("hostA", 8081)
-  private val HostB = createShardClient("hostB", 8080)
-
   it must "store the host and the port" in {
-    HostA.host shouldEqual "hostA"
-    HostA.port shouldEqual 8080
+    val host = newMockShardClient("host", 8080)
+
+    host.host shouldEqual "host"
+    host.port shouldEqual 8080
   }
 
-  it must "validate correctly if two clients are equal and have the same hashcode" in {
+  it must "make available the value as soon as it was set" in {
+    val rows = Table(
+      ("Key", "Value"),
+      (-1, "Value -1"),
+      (0, "Value 0"),
+      (1, "Value 1"),
+      (2, "Value 2"),
+      (3, "Value 3"),
+      (4, "Value 4"),
+      (5, "Value 5"),
+    )
 
-    // Same host and port.
-    HostA shouldEqual HostADup
-    HostA.hashCode shouldEqual HostADup.hashCode
-
-    // Same host but different port (e.g.: different containers within the same host).
-    HostA should not equal HostADifferentPort
-    HostA.hashCode should not equal HostADifferentPort.hashCode
-
-    // Same port but different host.
-    HostA should not equal HostB
-    HostA.hashCode should not equal HostB.hashCode
+    forAll (rows) { (lineNumber: Int, value: String) =>
+      val targetShard = newMockShardClient("test", 8080)
+      whenReady(targetShard.setInt(lineNumber, value) flatMap (_ => targetShard.getInt(lineNumber))) { result =>
+        result shouldEqual value
+      }
+    }
   }
 }

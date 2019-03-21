@@ -10,7 +10,7 @@ import scala.util.Try
   *
   * @param shards The shard locations.
   */
-case class RoundRobinShardsLinesDistributionConfig(shards: List[HostConfig]) {
+final case class RoundRobinShardsLinesDistributionConfig(shards: List[HostConfig]) {
   require(shards.nonEmpty, "The shards must be a non-empty list.")
 }
 
@@ -28,7 +28,7 @@ object RoundRobinShardsLinesDistributionConfig {
     * @param conf The configuration.
     * @return An instance of [[RoundRobinShardsLinesDistributionConfig]].
     */
-  def fromConfig(conf: Config): Try[RoundRobinShardsLinesDistributionConfig] = for {
-    shards <- Try(conf.getConfigList("shards").asScala.map(_.read[HostConfig](HostConfig.fromConfig).get).toList)
+  def from(conf: Config): Try[RoundRobinShardsLinesDistributionConfig] = for {
+    shards <- Try(conf.getConfigList("shards").asScala.map(_.read[HostConfig](HostConfig.from).get).toList)
   } yield RoundRobinShardsLinesDistributionConfig(shards)
 }

@@ -11,7 +11,7 @@ import com.salsify.lineserver.common.exception.LineServerException
   * @param line       The content of the line.
   * @param error      The error.
   */
-case class DistributionShardUploadException(
+final case class DistributionShardUploadException(
   host: String,
   port: Int,
   lineNumber: Long,

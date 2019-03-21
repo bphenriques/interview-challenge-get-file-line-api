@@ -3,6 +3,9 @@ package com.salsify.lineserver.client.distribution.strategies
 import com.salsify.helpers.BaseSpec
 import com.salsify.lineserver.common.config.HostConfig
 
+/**
+  * Tests [[RoundRobinShardsLinesDistributionConfig]].
+  */
 class RoundRobinShardsLinesDistributionConfigSpec extends BaseSpec {
 
   it must "reject empty set of shards" in {

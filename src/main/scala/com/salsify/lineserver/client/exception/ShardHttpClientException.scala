@@ -7,4 +7,4 @@ import com.salsify.lineserver.common.exception.LineServerException
   *
   * @param message  The message.
   */
-case class ShardHttpClientException(message: String) extends LineServerException(message)
+final case class ShardHttpClientException(message: String) extends LineServerException(message)

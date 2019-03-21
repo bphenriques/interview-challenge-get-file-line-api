@@ -11,7 +11,6 @@ import com.salsify.lineserver.common.config.HostConfig
 import com.salsify.lineserver.shard.Shard
 
 import scala.concurrent.{ExecutionContext, Future}
-import scala.util.{Failure, Success}
 
 /**
   * Shard Http client.
@@ -42,46 +41,39 @@ class ShardHttpClient(config: HostConfig)(
     */
   val port: Int = config.port
 
-  override def getInt(key: Int): Future[String] = {
-    val request = HttpRequest(uri = s"$host:$port/key/$key")
-
-    http.singleRequest(request)
+  /**
+    * @inheritdoc
+    *
+    * Fetches the value from the remote server using the Shard's REST Api.
+    * <p>
+    * Throws exception if the status is not HTTP 200 (ok).
+    */
+  override def getInt(key: Int): Future[String] =
+    http.singleRequest(HttpRequest(uri = s"$host:$port/key/$key"))
       .map { entity =>
         entity.status match {
           case StatusCodes.OK => entity
-          case code        => throw ShardHttpClientException(s"Unexpected HTTP $code in getInt($key).")
+          case code           => throw ShardHttpClientException(s"Unexpected HTTP $code in getInt($key).")
         }
-      }.onComplete {
-      case Success(entity) => Unmarshal(entity).to[String]
-      case Failure(e)      => throw e
-    }
+      }
+      .flatMap(response => Unmarshal(response).to[String])
 
-    for {
-      response <- http.singleRequest(request)
-      line <- Unmarshal(response.entity).to[String]
-    } yield line
-  }
-
-  override def setInt(key: Int, value: String): Future[Unit] = Future {
-    Marshal(value).to[RequestEntity].flatMap { entity =>
-      val request = HttpRequest(method = HttpMethods.PUT, uri = s"$host:$port/key/$key", entity = entity)
-
-      http.singleRequest(request)
-    }.onComplete {
-      case Failure(error) => throw error
-      case Success(httpResponse) => httpResponse.status match {
+  /**
+    * @inheritdoc
+    *
+    * Sets the value using the Shard's REST Api.
+    * <p>
+    * Throws exception if the status is not HTTP 201 (created).
+    */
+  override def setInt(key: Int, value: String): Future[Unit] =
+    Marshal(value).to[RequestEntity]
+      .flatMap { entity =>
+        val request = HttpRequest(method = HttpMethods.PUT, uri = s"$host:$port/key/$key", entity = entity)
+        http.singleRequest(request)
+      }
+      .map { response => response.status match {
         case StatusCodes.Created =>
         case code                => throw ShardHttpClientException(s"Unexpected HTTP $code in setInt($key, _).")
       }
     }
-  }
-
-  override def equals(client: Any): Boolean = {
-    client match {
-      case other: ShardHttpClient => config.host == other.host && config.port == other.port
-      case _ => false
-    }
-  }
-
-  override def hashCode: Int = config.hashCode()
 }

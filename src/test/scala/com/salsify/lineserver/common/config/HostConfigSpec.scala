@@ -2,6 +2,9 @@ package com.salsify.lineserver.common.config
 
 import com.salsify.helpers.BaseSpec
 
+/**
+  * Tests for [[HostConfig]].
+  */
 class HostConfigSpec extends BaseSpec {
 
   it must "reject invalid arguments" in {

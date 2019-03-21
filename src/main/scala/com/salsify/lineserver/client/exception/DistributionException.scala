@@ -11,7 +11,7 @@ import com.salsify.lineserver.common.exception.LineServerException
   * @param linesDistribution  The strategy used to distribute the lines.
   * @param error              The error.
   */
-case class DistributionException(
+final case class DistributionException(
   linesSupplier: LinesInputSupplier,
   linesDistribution: LinesDistribution,
   error: Throwable = None.orNull

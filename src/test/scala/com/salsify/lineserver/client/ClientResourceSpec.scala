@@ -3,6 +3,9 @@ package com.salsify.lineserver.client
 import com.salsify.helpers.BaseSpec
 import com.salsify.lineserver.client.exception.LineNotFoundException
 
+/**
+  * Tests [[ClientResourceSpec]].
+  */
 class ClientResourceSpec extends BaseSpec {
 
   it must "reject the line if outside of the range" in {
@@ -29,6 +32,13 @@ class ClientResourceSpec extends BaseSpec {
       whenReady(SampleClientResource.get(lineNumber)) { result =>
         result shouldEqual line
       }
+    }
+  }
+
+  it must "reject line 1 if the file is empty" in {
+    whenReady(EmptyClientResource.get(1).failed) { e =>
+      e shouldBe a[LineNotFoundException]
+      e.asInstanceOf[LineNotFoundException].lineNumber shouldEqual 1
     }
   }
 }

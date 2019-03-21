@@ -3,6 +3,9 @@ package com.salsify.lineserver.client
 import akka.http.scaladsl.model.StatusCodes
 import com.salsify.helpers.BaseSpec
 
+/**
+  * Tests [[ClientRoutes]].
+  */
 class ClientRoutesSpec extends BaseSpec with ClientRoutes {
 
   override val handler: ClientResource = SampleClientResource

@@ -1,11 +1,11 @@
-package com.salsify.lineserver.client.config
+package com.salsify.lineserver.common
 
 import com.salsify.helpers.BaseSpec
 
 /**
-  * Tests for [[ClientServerConfig]].
+  * Tests for [[com.salsify.lineserver.common.server.ServerFactory]].
   */
-class ClientServerConfigSpec extends BaseSpec {
+class ServerFactorySpec extends BaseSpec {
 
   it must "reject invalid configuration files" in {
     //TODO.

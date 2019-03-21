@@ -8,6 +8,14 @@ import com.salsify.lineserver.common.config.HostConfig
 
 import scala.concurrent.{ExecutionContext, Future}
 
+/**
+  * Simulates an in-memory cluster using [[MockShardHttpClient]].
+  *
+  * @param numberOfShards   The number of shards.
+  * @param materializer     (implicit) The Akka actor materializer.
+  * @param system           (implicit) The Akka actor system.
+  * @param executionContext (implicit) The execution context.
+  */
 class MockRoundRobinShardsLinesDistribution(numberOfShards: Int)(
   override implicit val materializer: ActorMaterializer,
   override implicit val system: ActorSystem,
@@ -17,9 +25,19 @@ class MockRoundRobinShardsLinesDistribution(numberOfShards: Int)(
 ) {
   require(numberOfShards > 0)
 
-  override val shards: Seq[MockShardHttpClient] = (1 to numberOfShards)
-    .map(index => new MockShardHttpClient(s"shard-$index", 8080))
+  /**
+    * Creates an in-memory sequence of mocked shard clients.
+    */
+  override val shards: Seq[MockShardHttpClient] =
+    (1 to numberOfShards)
+      .map(index => new MockShardHttpClient(s"shard-$index", 8080))
 
+  /**
+    * Reads the file and delegates file distribution to super.
+    *
+    * @param lineSupplier The line supplier.
+    * @return The future when the setup has completed.
+    */
   override def setup(lineSupplier: LinesInputSupplier): Future[Unit] = Future {
     lineSupplier.getLines().foreach { line =>
       setInt(line.index, line.content)

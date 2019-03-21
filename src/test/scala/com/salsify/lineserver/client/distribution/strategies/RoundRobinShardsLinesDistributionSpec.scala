@@ -5,6 +5,9 @@ import com.salsify.helpers.{BaseSpec, MockRoundRobinShardsLinesDistribution}
 import scala.concurrent.Await
 import scala.concurrent.duration._
 
+/**
+  * Tests [[RoundRobinShardsLinesDistribution]].
+  */
 class RoundRobinShardsLinesDistributionSpec extends BaseSpec {
 
   it must "initialize correctly" in {

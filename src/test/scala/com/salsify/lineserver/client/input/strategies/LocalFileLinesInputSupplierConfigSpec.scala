@@ -1,9 +1,8 @@
-package com.salsify.lineserver.client.config
+package com.salsify.lineserver.client.input.strategies
 
 import java.io.File
 
 import com.salsify.helpers.BaseSpec
-import com.salsify.lineserver.client.input.strategies.LocalFileLinesInputSupplierConfig
 
 /**
   * Tests [[LocalFileLinesInputSupplierConfig]].

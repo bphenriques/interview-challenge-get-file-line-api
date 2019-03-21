@@ -6,13 +6,10 @@ package com.salsify.helpers
 
 import java.io.File
 
-import akka.actor.ActorSystem
-import akka.http.scaladsl.testkit.{RouteTest, ScalatestRouteTest}
+import akka.http.scaladsl.testkit.ScalatestRouteTest
 import com.salsify.lineserver.client.ClientResource
 import com.salsify.lineserver.client.distribution.ShardHttpClient
 import com.salsify.lineserver.client.input.strategies.{LocalFileLinesInputSupplier, LocalFileLinesInputSupplierConfig}
-import com.salsify.lineserver.common.config.HostConfig
-import com.salsify.lineserver.shard.ShardResource
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.prop.TableDrivenPropertyChecks
 import org.scalatest.{FlatSpec, Matchers}
@@ -24,25 +21,54 @@ import scala.concurrent.ExecutionContext
   */
 class BaseSpec extends FlatSpec with Matchers with TableDrivenPropertyChecks with ScalaFutures with ScalatestRouteTest {
 
+  /**
+    * The execution context. Renaming because implicits require it.
+    */
   val executionContext: ExecutionContext = executor
 
-  val ValidHostConfig = HostConfig("localhost", 8080)
+  /**
+    * Lines Provider given a sample file with few lines.
+    */
+  val SampleLinesProvider = LocalFileLinesInputSupplier(LocalFileLinesInputSupplierConfig(getResource("sample.txt")))
 
-  val LocalhostConfig = HostConfig("localhost", 8080)
+  /**
+    * Cluster that serves the sample file.
+    */
+  val SampleCluster: MockRoundRobinShardsLinesDistribution = {
+    val cluster = new MockRoundRobinShardsLinesDistribution(3)
+    cluster.setup(SampleLinesProvider)
+    cluster
+  }
 
-  val SampleLinesProviderConfig = LocalFileLinesInputSupplierConfig(getResource("sample.txt"))
-  val SampleLinesProvider = LocalFileLinesInputSupplier.apply(SampleLinesProviderConfig)
-
-  val SampleLinesDistribution = new MockRoundRobinShardsLinesDistribution(3)
-  SampleLinesDistribution.setup(SampleLinesProvider)
-
+  /**
+    * Routes resource that serves the sample file.
+    */
   val SampleClientResource = new ClientResource(
     SampleLinesProvider,
-    SampleLinesDistribution
+    SampleCluster
   )
 
-  val SampleShardResource = new ShardResource()
+  /**
+    * Lines Provider given a empty file.
+    */
+  val EmptyLinesProvider = LocalFileLinesInputSupplier(LocalFileLinesInputSupplierConfig(getResource("empty.txt")))
 
+  /**
+    * Cluster that serves the empty file.
+    */
+  val EmptyCluster: MockRoundRobinShardsLinesDistribution = {
+    val cluster = new MockRoundRobinShardsLinesDistribution(3)
+    cluster.setup(EmptyLinesProvider)
+    cluster
+  }
+
+  /**
+    * Routes resource that serves the empty file.
+    */
+  val EmptyClientResource = new ClientResource(
+    EmptyLinesProvider,
+    EmptyCluster
+  )
 
   /**
     * Gets a resource file.
@@ -52,5 +78,12 @@ class BaseSpec extends FlatSpec with Matchers with TableDrivenPropertyChecks wit
     */
   def getResource(file: String): File = new File(getClass.getClassLoader.getResource(".").getPath, file)
 
-  def createShardClient(host: String, port: Int = 8080): ShardHttpClient = new ShardHttpClient(HostConfig(host, port))
+  /**
+    * Creates a mocked shard HTTP client.
+    *
+    * @param host The host.
+    * @param port The port.
+    * @return An instance of [[ShardHttpClient]].
+    */
+  def newMockShardClient(host: String, port: Int = 8080): ShardHttpClient = new MockShardHttpClient(host, port)
 }

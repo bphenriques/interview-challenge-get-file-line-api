@@ -32,7 +32,7 @@ object LinesDistributionFactory {
   ): Try[LinesDistribution] = Try {
     conf.getString("type") match {
       case "shards-round-robin" => conf.getConfig("shards-round-robin")
-        .read[RoundRobinShardsLinesDistributionConfig](RoundRobinShardsLinesDistributionConfig.fromConfig)
+        .read[RoundRobinShardsLinesDistributionConfig](RoundRobinShardsLinesDistributionConfig.from)
         .map(c => new RoundRobinShardsLinesDistribution(c))
         .get
 
