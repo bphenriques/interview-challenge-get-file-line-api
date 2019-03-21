@@ -28,7 +28,7 @@ class ShardRoutesSpec extends BaseSpec with ShardRoutes {
   it must "return HTTP 200 and the content" in {
     val rows = Table(
       ("Response", "Key"),
-      ("Value 0", 0), //Key 0 should be accepted b/c it is a valid non-negative Long.
+      ("Value 0", 0), //Key 0 should be accepted b/c it is a valid non-negative Integer.
       ("Value 1", 1),
       ("Value 1", 1),
       ("Value 2", 2),

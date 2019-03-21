@@ -1,4 +1,4 @@
-package com.salsify.lineserver.client.distribution
+package com.salsify.lineserver.client.manager
 
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http

@@ -1,8 +1,8 @@
 package com.salsify.lineserver.client
 
-import com.salsify.lineserver.client.distribution.LinesDistribution
 import com.salsify.lineserver.client.exception.LineNotFoundException
 import com.salsify.lineserver.client.input.LinesInputSupplier
+import com.salsify.lineserver.client.manager.ShardsManager
 import com.typesafe.scalalogging.LazyLogging
 
 import scala.concurrent.Future
@@ -15,7 +15,7 @@ import scala.concurrent.Future
   */
 final class ClientResource(
   linesInputSupplier: LinesInputSupplier,
-  linesDistribution: LinesDistribution
+  linesDistribution: ShardsManager
 ) extends Client with LazyLogging {
 
   override def get(lineNumber: Int): Future[String] =

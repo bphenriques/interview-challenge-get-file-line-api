@@ -8,8 +8,8 @@ import java.io.File
 
 import akka.http.scaladsl.testkit.ScalatestRouteTest
 import com.salsify.lineserver.client.ClientResource
-import com.salsify.lineserver.client.distribution.ShardHttpClient
 import com.salsify.lineserver.client.input.strategies.{LocalFileLinesInputSupplier, LocalFileLinesInputSupplierConfig}
+import com.salsify.lineserver.client.manager.ShardHttpClient
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.prop.TableDrivenPropertyChecks
 import org.scalatest.{FlatSpec, Matchers}
@@ -34,8 +34,8 @@ class BaseSpec extends FlatSpec with Matchers with TableDrivenPropertyChecks wit
   /**
     * Cluster that serves the sample file.
     */
-  val SampleCluster: MockRoundRobinShardsLinesDistribution = {
-    val cluster = new MockRoundRobinShardsLinesDistribution(3)
+  val SampleCluster: MockRoundRobinShardsManager = {
+    val cluster = new MockRoundRobinShardsManager(3)
     cluster.setup(SampleLinesProvider)
     cluster
   }
@@ -56,8 +56,8 @@ class BaseSpec extends FlatSpec with Matchers with TableDrivenPropertyChecks wit
   /**
     * Cluster that serves the empty file.
     */
-  val EmptyCluster: MockRoundRobinShardsLinesDistribution = {
-    val cluster = new MockRoundRobinShardsLinesDistribution(3)
+  val EmptyCluster: MockRoundRobinShardsManager = {
+    val cluster = new MockRoundRobinShardsManager(3)
     cluster.setup(EmptyLinesProvider)
     cluster
   }

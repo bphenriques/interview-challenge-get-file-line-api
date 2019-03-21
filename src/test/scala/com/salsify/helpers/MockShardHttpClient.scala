@@ -2,7 +2,7 @@ package com.salsify.helpers
 
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
-import com.salsify.lineserver.client.distribution.ShardHttpClient
+import com.salsify.lineserver.client.manager.ShardHttpClient
 import com.salsify.lineserver.common.config.HostConfig
 import com.salsify.lineserver.shard.ShardResource
 

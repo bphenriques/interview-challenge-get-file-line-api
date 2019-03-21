@@ -2,8 +2,9 @@ package com.salsify.lineserver.client.config
 
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
-import com.salsify.lineserver.client.distribution.{LinesDistribution, LinesDistributionFactory}
+import com.salsify.lineserver.client.distribution.ShardsManager
 import com.salsify.lineserver.client.input.{LinesInputSupplier, LinesInputSupplierFactory}
+import com.salsify.lineserver.client.manager.{ShardsManager, ShardsManagerFactory}
 import com.salsify.lineserver.common.config.HostConfig
 import com.typesafe.config.Config
 
@@ -20,7 +21,7 @@ import scala.util.Try
 final case class ClientServerConfig(
   binding: HostConfig,
   linesSupplier: LinesInputSupplier,
-  linesDistribution: LinesDistribution
+  linesDistribution: ShardsManager
 )
 
 /**
@@ -46,7 +47,7 @@ object ClientServerConfig {
   ): Try[ClientServerConfig] = for {
     httpConfig        <- conf.getConfig("http").read[HostConfig](HostConfig.from)
     lineSupplier      <- LinesInputSupplierFactory.from(conf.getConfig("input"))
-    lineDistribution  <- LinesDistributionFactory.from(conf.getConfig("distribution"))
+    lineDistribution  <- ShardsManagerFactory.from(conf.getConfig("manager"))
   } yield ClientServerConfig(httpConfig, lineSupplier, lineDistribution)
 }
 

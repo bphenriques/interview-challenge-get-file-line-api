@@ -2,8 +2,9 @@ package com.salsify.helpers
 
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
-import com.salsify.lineserver.client.distribution.strategies.{RoundRobinShardsLinesDistribution, RoundRobinShardsLinesDistributionConfig}
+import com.salsify.lineserver.client.manager.strategies.RoundRobinShardManagerConfig
 import com.salsify.lineserver.client.input.LinesInputSupplier
+import com.salsify.lineserver.client.manager.strategies.{RoundRobinShardManagerConfig, RoundRobinShardsManager}
 import com.salsify.lineserver.common.config.HostConfig
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -16,12 +17,12 @@ import scala.concurrent.{ExecutionContext, Future}
   * @param system           (implicit) The Akka actor system.
   * @param executionContext (implicit) The execution context.
   */
-class MockRoundRobinShardsLinesDistribution(numberOfShards: Int)(
+class MockRoundRobinShardsManager(numberOfShards: Int)(
   override implicit val materializer: ActorMaterializer,
   override implicit val system: ActorSystem,
   override implicit val executionContext: ExecutionContext
-) extends RoundRobinShardsLinesDistribution(
-  RoundRobinShardsLinesDistributionConfig(List(HostConfig("placeholder", 8080)))
+) extends RoundRobinShardsManager(
+  RoundRobinShardManagerConfig(List(HostConfig("placeholder", 8080)))
 ) {
   require(numberOfShards > 0)
 

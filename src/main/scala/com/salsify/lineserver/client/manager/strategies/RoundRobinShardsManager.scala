@@ -1,12 +1,13 @@
-package com.salsify.lineserver.client.distribution.strategies
+package com.salsify.lineserver.client.manager.strategies
 
 import java.util.concurrent.atomic.AtomicReference
 
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
-import com.salsify.lineserver.client.distribution.{LinesDistribution, ShardHttpClient}
-import com.salsify.lineserver.client.exception.{DistributionShardUploadException, DistributionException}
+import com.salsify.lineserver.client.distribution.{ShardHttpClient, ShardsManager}
+import com.salsify.lineserver.client.exception.{DistributionException, DistributionShardUploadException}
 import com.salsify.lineserver.client.input.LinesInputSupplier
+import com.salsify.lineserver.client.manager.{ShardHttpClient, ShardsManager}
 import com.typesafe.scalalogging.LazyLogging
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -22,11 +23,11 @@ import scala.util.{Failure, Success}
   * @param system           (implicit) The Akka actor system.
   * @param executionContext (implicit) The execution context.
   */
-class RoundRobinShardsLinesDistribution(config: RoundRobinShardsLinesDistributionConfig)(
+class RoundRobinShardsManager(config: RoundRobinShardManagerConfig)(
   implicit val materializer: ActorMaterializer,
   implicit val system: ActorSystem,
   implicit val executionContext: ExecutionContext
-) extends LinesDistribution with LazyLogging {
+) extends ShardsManager with LazyLogging {
 
   /**
     * The set of shards.

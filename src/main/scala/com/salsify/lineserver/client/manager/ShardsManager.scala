@@ -1,4 +1,4 @@
-package com.salsify.lineserver.client.distribution
+package com.salsify.lineserver.client.manager
 
 import com.salsify.lineserver.client.input.LinesInputSupplier
 import com.salsify.lineserver.shard.Shard
@@ -6,9 +6,9 @@ import com.salsify.lineserver.shard.Shard
 import scala.concurrent.Future
 
 /**
-  * Interface to distribute lines and access them.
+  * Interface to manage shards.
   */
-trait LinesDistribution extends Shard {
+trait ShardsManager extends Shard {
 
   /**
     * Perform any necessary setup operations.

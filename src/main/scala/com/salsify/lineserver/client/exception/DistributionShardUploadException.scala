@@ -14,7 +14,7 @@ import com.salsify.lineserver.common.exception.LineServerException
 final case class DistributionShardUploadException(
   host: String,
   port: Int,
-  lineNumber: Long,
+  lineNumber: Int,
   line: String,
   error: Throwable = None.orNull
 ) extends LineServerException(s"Shard '$host:$port' failed. Failed to upload line '$lineNumber': $line.", error)

@@ -1,6 +1,7 @@
-package com.salsify.lineserver.client.distribution
+package com.salsify.lineserver.client.manager
 
 import com.salsify.helpers.BaseSpec
+import com.salsify.lineserver.client.manager.ShardHttpClient
 
 /**
   * Tests [[ShardHttpClient]].

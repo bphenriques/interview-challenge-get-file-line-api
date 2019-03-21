@@ -1,16 +1,17 @@
-package com.salsify.lineserver.client.distribution.strategies
+package com.salsify.lineserver.client.manager.strategies
 
 import com.salsify.helpers.BaseSpec
+import com.salsify.lineserver.client.manager.strategies.RoundRobinShardManagerConfig
 import com.salsify.lineserver.common.config.HostConfig
 
 /**
-  * Tests [[RoundRobinShardsLinesDistributionConfig]].
+  * Tests [[RoundRobinShardManagerConfig]].
   */
-class RoundRobinShardsLinesDistributionConfigSpec extends BaseSpec {
+class RoundRobinShardsManagerConfigSpec extends BaseSpec {
 
   it must "reject empty set of shards" in {
     assertThrows[Exception] {
-      RoundRobinShardsLinesDistributionConfig(List())
+      RoundRobinShardManagerConfig(List())
     }
   }
 
@@ -20,7 +21,7 @@ class RoundRobinShardsLinesDistributionConfigSpec extends BaseSpec {
       HostConfig("localhost", 8081),
     )
 
-    val config = RoundRobinShardsLinesDistributionConfig(shards)
+    val config = RoundRobinShardManagerConfig(shards)
     config.shards shouldEqual shards
   }
 }
