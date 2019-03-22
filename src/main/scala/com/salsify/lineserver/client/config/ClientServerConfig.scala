@@ -2,7 +2,6 @@ package com.salsify.lineserver.client.config
 
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
-import com.salsify.lineserver.client.distribution.ShardsManager
 import com.salsify.lineserver.client.input.{LinesInputSupplier, LinesInputSupplierFactory}
 import com.salsify.lineserver.client.manager.{ShardsManager, ShardsManagerFactory}
 import com.salsify.lineserver.common.config.HostConfig

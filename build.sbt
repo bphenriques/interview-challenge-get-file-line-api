@@ -1,5 +1,6 @@
 import Dependencies._
 import com.typesafe.sbt.packager.archetypes.scripts.BashStartScriptPlugin.autoImport.bashScriptExtraDefines
+import sbt.Keys.libraryDependencies
 
 ThisBuild / scalaVersion     := "2.12.8"
 ThisBuild / organization     := "com.salsify"
@@ -14,27 +15,28 @@ lazy val ConfigurationFile = "application.conf"
 lazy val root = (project in file("."))
   .settings(
     name := "lineserver",
+    // Dependencies for the application.
     libraryDependencies ++= Seq(
-      // Dependencies for the application.
       typeSafeConfig,
       scalaLogging,
       logbackClassic,
       akkaHTTP,
       akkaStream,
-      akkaCaching,
+      akkaCaching
+    ),
 
-      // Dependencies wih Test scope.
-      scalaTest % Test,
-      testContainersScala % Test,
-      akkaTest % Test,
-      akkaHttpTest % Test
-    )
+    // Dependencies wih Test scope.
+    libraryDependencies ++= Seq(
+      scalaTest,
+      akkaTest,
+      akkaHttpTest
+    ).map(_ % Test),
   )
   // Add packaging support.
   .enablePlugins(JavaAppPackaging)
+  // Add integration with docker.
   .enablePlugins(DockerPlugin)
   .settings(packagingSettings)
-
 
 import com.typesafe.sbt.SbtNativePackager.autoImport.NativePackagerHelper._
 lazy val packagingSettings = Seq(
@@ -61,18 +63,8 @@ lazy val packagingSettings = Seq(
   bashScriptExtraDefines += s"""addJava "-Dlogback.configurationFile=$${app_home}/../conf/logback.xml""""
 )
 
+// Change docker image. See https://www.scala-sbt.org/sbt-native-packager/formats/docker.html for more information.
 dockerBaseImage := "openjdk:8-jre"
 dockerExposedPorts := Seq(8080)
+dockerUpdateLatest := true
 
-
-/**
-  * https://stackoverflow.com/questions/21464673/sbt-trapexitsecurityexception-thrown-at-sbt-run
-  */
-trapExit := false
-
-/*
-imageNames in docker := Seq(
-  ImageName("salsify/line-server:" + version.value),
-  ImageName("salsify/line-server:latest"),
-)
-*/

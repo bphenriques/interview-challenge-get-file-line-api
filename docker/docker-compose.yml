@@ -11,7 +11,7 @@ services:
       - shard2
     volumes:
       - ./volumes/client.conf:/opt/docker/conf/application.conf
-      - ${FILE}:/tmp/file.txt
+      - ${FILE}:/opt/file.txt
     healthcheck:
       test: ["CMD", "curl", "--fail", "http://localhost:8080/health"]
       interval: 30s

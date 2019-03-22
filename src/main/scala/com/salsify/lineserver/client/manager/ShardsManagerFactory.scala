@@ -2,7 +2,6 @@ package com.salsify.lineserver.client.manager
 
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
-import com.salsify.lineserver.client.distribution.strategies.{RoundRobinShardManagerConfig, RoundRobinShardsManager}
 import com.salsify.lineserver.client.manager.strategies.{RoundRobinShardManagerConfig, RoundRobinShardsManager}
 import com.salsify.lineserver.common.exception.LineServerConfigException
 import com.typesafe.config.Config

@@ -4,7 +4,6 @@ import java.util.concurrent.atomic.AtomicReference
 
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
-import com.salsify.lineserver.client.distribution.{ShardHttpClient, ShardsManager}
 import com.salsify.lineserver.client.exception.{DistributionException, DistributionShardUploadException}
 import com.salsify.lineserver.client.input.LinesInputSupplier
 import com.salsify.lineserver.client.manager.{ShardHttpClient, ShardsManager}
@@ -101,7 +100,7 @@ class RoundRobinShardsManager(config: RoundRobinShardManagerConfig)(
     // The sequence of every line being set. Reading the lines is streaming, as well
     Future.sequence(linesInsertedFuture)
       .onComplete {
-        case Success(_)   => logger.info(s"Processed ! ${processedLines.get()} lines! They are now available across ${shards.size} shards.")
+        case Success(_)   => logger.info(s"Processed ${processedLines.get()} lines! They are now available across ${shards.size} shards.")
         case Failure(ex)  => throw DistributionException(lineSupplier, this, ex)
       }
   }
