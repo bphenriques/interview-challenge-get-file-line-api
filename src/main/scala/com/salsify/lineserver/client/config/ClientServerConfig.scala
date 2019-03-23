@@ -3,7 +3,7 @@ package com.salsify.lineserver.client.config
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
 import com.salsify.lineserver.client.input.{LinesInputSupplier, LinesInputSupplierFactory}
-import com.salsify.lineserver.client.manager.{ShardsManager, ShardsManagerFactory}
+import com.salsify.lineserver.client.manager.{LinesManager, LinesManagerFactory}
 import com.salsify.lineserver.common.config.HostConfig
 import com.typesafe.config.Config
 
@@ -14,13 +14,13 @@ import scala.util.Try
   * Configuration of [[com.salsify.lineserver.client.ClientServer]]
   *
   * @param binding            The akka http binding.
-  * @param linesSupplier      The lines supplier.
-  * @param linesDistribution  The strategy used to distribute the lines.
+  * @param linesSupplier      Optional. The lines supplier.
+  * @param linesManager       The strategy used to manage the lines.
   */
 final case class ClientServerConfig(
   binding: HostConfig,
-  linesSupplier: LinesInputSupplier,
-  linesDistribution: ShardsManager
+  linesSupplier: Option[LinesInputSupplier],
+  linesManager: LinesManager
 )
 
 /**
@@ -45,9 +45,12 @@ object ClientServerConfig {
     executionContext: ExecutionContext
   ): Try[ClientServerConfig] = for {
     httpConfig        <- conf.getConfig("http").read[HostConfig](HostConfig.from)
-    lineSupplier      <- LinesInputSupplierFactory.from(conf.getConfig("input"))
-    lineDistribution  <- ShardsManagerFactory.from(conf.getConfig("manager"))
-  } yield ClientServerConfig(httpConfig, lineSupplier, lineDistribution)
+    linesManager      <- LinesManagerFactory.from(conf.getConfig("manager"))
+  } yield ClientServerConfig(
+    httpConfig,
+    Try(LinesInputSupplierFactory.from(conf.getConfig("input"))).toOption.map(_.get),
+    linesManager
+  )
 }
 
 

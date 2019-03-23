@@ -6,6 +6,7 @@ import akka.http.scaladsl.server.directives.CachingDirectives._
 import akka.http.scaladsl.model.{ContentTypes, HttpEntity, StatusCodes, Uri}
 import akka.http.scaladsl.server.{Directives, RequestContext, Route, RouteResult}
 import com.salsify.lineserver.client.exception.LineNotFoundException
+import com.typesafe.scalalogging.LazyLogging
 
 import scala.concurrent.ExecutionContext
 import scala.util.{Failure, Success}
@@ -13,12 +14,12 @@ import scala.util.{Failure, Success}
 /**
   * Main Akka routes that publicly makes available the lines.
   */
-trait ClientRoutes extends Directives {
+trait ClientRoutes extends Directives with LazyLogging {
 
   /**
     * The routes handler.
     */
-  val handler: ClientResource
+  val handler: ClientResource = createHandler()
 
   /**
     * The Akka actor system.
@@ -30,7 +31,6 @@ trait ClientRoutes extends Directives {
     */
   implicit val executionContext: ExecutionContext
 
-
   /**
     * The cache key: The full uri.
     */
@@ -41,7 +41,14 @@ trait ClientRoutes extends Directives {
   /**
     * The lines cache.
     */
-  val lineCache: Cache[Uri, RouteResult] = routeCache[Uri]
+  private val lineCache: Cache[Uri, RouteResult] = routeCache[Uri]
+
+  /**
+    * Creates the handler.
+    *
+    * @return The handler.
+    */
+  def createHandler(): ClientResource
 
   /**
     * The `/lines` endpoints.
@@ -55,19 +62,13 @@ trait ClientRoutes extends Directives {
     path("lines" / IntNumber) { lineIndex =>
       get {
         alwaysCache(lineCache, uriKeyer) {
-          handler.get(lineIndex) onComplete {
-            case Success(line) => complete(HttpEntity(ContentTypes.`text/html(UTF-8)`, line))
-            case Failure(e) => e match {
-              case LineNotFoundException(_) => complete(StatusCodes.RequestEntityTooLarge, e.getMessage)
-              case _ => complete(StatusCodes.InternalServerError, s"An error occurred: ${e.getMessage}")
-            }
-          }
-
           onComplete(handler.get(lineIndex)) {
             case Success(line) => complete(HttpEntity(ContentTypes.`text/html(UTF-8)`, line))
-            case Failure(e) => e match {
-              case LineNotFoundException(_) => complete(StatusCodes.RequestEntityTooLarge, e.getMessage)
-              case _ => complete(StatusCodes.InternalServerError, s"An error occurred: ${e.getMessage}")
+            case Failure(exception) => exception match {
+              case LineNotFoundException(_) => complete(StatusCodes.RequestEntityTooLarge, exception.getMessage)
+              case e =>
+                logger.error(s"Unrecognized error while getting line $lineIndex", e)
+                complete(StatusCodes.InternalServerError, s"An error occurred: ${e.getMessage}")
             }
           }
         }

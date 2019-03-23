@@ -23,11 +23,6 @@ final class LocalFileLinesInputSupplier(
 ) extends LinesInputSupplier with LazyLogging {
 
   /**
-    * Storing the number of lines once.
-    */
-  override val size: Int = Source.fromFile(config.file).getLines().length
-
-  /**
     * Returns a lazy stream of [[Line]].
     */
   override def getLines(): Seq[Line] = {

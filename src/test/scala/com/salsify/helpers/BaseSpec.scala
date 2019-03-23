@@ -34,8 +34,8 @@ class BaseSpec extends FlatSpec with Matchers with TableDrivenPropertyChecks wit
   /**
     * Cluster that serves the sample file.
     */
-  val SampleCluster: MockRoundRobinShardsManager = {
-    val cluster = new MockRoundRobinShardsManager(3)
+  val SampleCluster: MockRoundRobinLinesManager = {
+    val cluster = new MockRoundRobinLinesManager(3)
     cluster.setup(SampleLinesProvider)
     cluster
   }
@@ -56,8 +56,8 @@ class BaseSpec extends FlatSpec with Matchers with TableDrivenPropertyChecks wit
   /**
     * Cluster that serves the empty file.
     */
-  val EmptyCluster: MockRoundRobinShardsManager = {
-    val cluster = new MockRoundRobinShardsManager(3)
+  val EmptyCluster: MockRoundRobinLinesManager = {
+    val cluster = new MockRoundRobinLinesManager(3)
     cluster.setup(EmptyLinesProvider)
     cluster
   }

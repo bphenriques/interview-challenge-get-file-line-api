@@ -17,10 +17,10 @@ trait LinesInputSupplier {
   def getLines(): Seq[Line]
 
   /**
-    * The number of lines in the file. This value should be cached and not re-computed.
+    * The number of lines in the file. This computation can be expensive, therefore store the result after usage.
     *
     * @return The number of lines in the file.
     */
-  def size: Int
+  def size: Int = getLines().size
 }
 

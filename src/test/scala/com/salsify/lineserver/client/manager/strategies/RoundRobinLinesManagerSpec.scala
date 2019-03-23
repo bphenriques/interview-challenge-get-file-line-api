@@ -1,38 +1,38 @@
 package com.salsify.lineserver.client.manager.strategies
 
-import com.salsify.helpers.{BaseSpec, MockRoundRobinShardsManager}
-import com.salsify.lineserver.client.manager.strategies.RoundRobinShardsManager
+import com.salsify.helpers.{BaseSpec, MockRoundRobinLinesManager}
+import com.salsify.lineserver.client.manager.strategies.RoundRobinLinesManager
 
 import scala.concurrent.Await
 import scala.concurrent.duration._
 
 /**
-  * Tests [[RoundRobinShardsManager]].
+  * Tests [[RoundRobinLinesManager]].
   */
-class RoundRobinShardsManagerSpec extends BaseSpec {
+class RoundRobinLinesManagerSpec extends BaseSpec {
 
   it must "initialize correctly" in {
-    val cluster = new MockRoundRobinShardsManager(2)
+    val cluster = new MockRoundRobinLinesManager(2)
     cluster.shards.size shouldEqual 2
   }
 
   it must "assertion fails if line number is negative or zero" in {
-    val cluster = new MockRoundRobinShardsManager(1)
+    val cluster = new MockRoundRobinLinesManager(1)
     val rows = Table("Line Number", -1, 0)
     forAll (rows) { lineNumber: Int =>
       assertThrows[AssertionError] {
-        cluster.getInt(lineNumber)
+        cluster.getString(lineNumber)
       }
     }
   }
 
   it must "return the same shard if provided a single shard" in {
-    val cluster = new MockRoundRobinShardsManager(1)
+    val cluster = new MockRoundRobinLinesManager(1)
     cluster.shardFor(1) shouldEqual cluster.shardFor(2)
   }
 
   it must "use round-robin to select the shard given a line number" in {
-    val cluster = new MockRoundRobinShardsManager(2)
+    val cluster = new MockRoundRobinLinesManager(2)
 
     cluster.shardFor(1) shouldEqual cluster.shards(1)
     cluster.shardFor(2) shouldEqual cluster.shards(0)
@@ -49,10 +49,10 @@ class RoundRobinShardsManagerSpec extends BaseSpec {
       (0, 5, "Line 5"),
     )
 
-    val cluster = new MockRoundRobinShardsManager(2)
+    val cluster = new MockRoundRobinLinesManager(2)
     forAll (rows) { (shard: Int, lineNumber: Int, line: String) =>
       val targetShard = cluster.shards(shard)
-      whenReady(targetShard.setInt(lineNumber, line) flatMap (_ => targetShard.getInt(lineNumber))) { result =>
+      whenReady(targetShard.setString(lineNumber, line) flatMap (_ => targetShard.getString(lineNumber))) { result =>
         result shouldEqual line
       }
     }
@@ -68,10 +68,10 @@ class RoundRobinShardsManagerSpec extends BaseSpec {
       ("Line 5", 5)
     )
 
-    val cluster = new MockRoundRobinShardsManager(2)
+    val cluster = new MockRoundRobinLinesManager(2)
     Await.result(cluster.setup(SampleLinesProvider), 5 second)
     forAll (rows) { (line: String, lineNumber: Int) =>
-      whenReady(cluster.getInt(lineNumber)) { result =>
+      whenReady(cluster.getString(lineNumber)) { result =>
         result shouldEqual line
       }
     }

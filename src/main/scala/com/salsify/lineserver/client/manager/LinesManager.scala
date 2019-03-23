@@ -1,13 +1,14 @@
-package com.salsify.lineserver.shard
+package com.salsify.lineserver.client.manager
 
+import com.salsify.lineserver.shard.Shard
 import com.salsify.lineserver.shard.exception.KeyNotFoundException
 
 import scala.concurrent.Future
 
 /**
-  * The shards API.
+  * Interface to manage shards. The interface contains elements of [[Shard]].
   */
-trait Shard {
+trait LinesManager {
 
   /**
     * Gets the stored String value given key.
@@ -28,9 +29,10 @@ trait Shard {
   def setString(key: Int, value: String): Future[Unit]
 
   /**
-    * Returns the number of stores rows.
+    * The number of available lines. This allows new clients to join and know the number of lines available without
+    * knowing anything about the source file.
     *
-    * @return The future with the number of stored rows.
+    * @return The number of available lines.
     */
   def count(): Future[Int]
 }

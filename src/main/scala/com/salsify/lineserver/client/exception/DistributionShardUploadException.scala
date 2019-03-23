@@ -12,9 +12,7 @@ import com.salsify.lineserver.common.exception.LineServerException
   * @param error      The error.
   */
 final case class DistributionShardUploadException(
-  host: String,
-  port: Int,
   lineNumber: Int,
   line: String,
   error: Throwable = None.orNull
-) extends LineServerException(s"Shard '$host:$port' failed. Failed to upload line '$lineNumber': $line.", error)
+) extends LineServerException(s"Failed to upload line '$lineNumber': $line.", error)

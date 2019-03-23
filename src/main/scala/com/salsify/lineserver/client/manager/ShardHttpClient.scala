@@ -48,12 +48,12 @@ class ShardHttpClient(config: HostConfig)(
     * <p>
     * Throws exception if the status is not HTTP 200 (ok).
     */
-  override def getInt(key: Int): Future[String] =
+  override def getString(key: Int): Future[String] =
     http.singleRequest(HttpRequest(uri = s"$host:$port/key/$key"))
       .map { entity =>
         entity.status match {
           case StatusCodes.OK => entity
-          case code           => throw ShardHttpClientException(s"Unexpected HTTP $code in getInt($key).")
+          case code           => throw ShardHttpClientException(this, s"Unexpected HTTP $code in getInt($key).")
         }
       }
       .flatMap(response => Unmarshal(response).to[String])
@@ -65,7 +65,7 @@ class ShardHttpClient(config: HostConfig)(
     * <p>
     * Throws exception if the status is not HTTP 201 (created).
     */
-  override def setInt(key: Int, value: String): Future[Unit] =
+  override def setString(key: Int, value: String): Future[Unit] =
     Marshal(value).to[RequestEntity]
       .flatMap { entity =>
         val request = HttpRequest(method = HttpMethods.PUT, uri = s"$host:$port/key/$key", entity = entity)
@@ -73,7 +73,20 @@ class ShardHttpClient(config: HostConfig)(
       }
       .map { response => response.status match {
         case StatusCodes.Created =>
-        case code                => throw ShardHttpClientException(s"Unexpected HTTP $code in setInt($key, _).")
+        case code                => throw ShardHttpClientException(this, s"Unexpected HTTP $code in setInt($key, _).")
       }
     }
+
+  /**
+    * @inheritdoc
+    */
+  override def count(): Future[Int] = http.singleRequest(HttpRequest(uri = s"$host:$port/count"))
+    .map { entity =>
+      entity.status match {
+        case StatusCodes.OK => entity
+        case code           => throw ShardHttpClientException(this, s"Unexpected HTTP $code in count().")
+      }
+    }
+    .flatMap(response => Unmarshal(response).to[String])
+    .map(_.toInt)
 }

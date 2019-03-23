@@ -16,7 +16,7 @@ class ShardResourceSpec extends BaseSpec {
   it must "reject keys if they were not inserted before" in {
     val rows = Table("Key", -1, 2, 6)
     forAll (rows) { key: Int =>
-      whenReady(ShardResource.getInt(key).failed) { e =>
+      whenReady(ShardResource.getString(key).failed) { e =>
         e shouldBe a[KeyNotFoundException]
         e.asInstanceOf[KeyNotFoundException].key shouldEqual key
       }
@@ -34,7 +34,7 @@ class ShardResourceSpec extends BaseSpec {
     )
 
     forAll (rows) { (value: String, key: Int) =>
-      whenReady(ShardResource.setInt(key, value).flatMap(_ => ShardResource.getInt(key))) { result =>
+      whenReady(ShardResource.setString(key, value).flatMap(_ => ShardResource.getString(key))) { result =>
         result shouldEqual value
       }
     }

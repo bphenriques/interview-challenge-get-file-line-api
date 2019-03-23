@@ -3,9 +3,9 @@ package com.salsify.lineserver.client.manager
 import com.salsify.helpers.BaseSpec
 
 /**
-  * Tests for [[ShardsManagerFactory]]
+  * Tests for [[LinesManagerFactory]]
   */
-class ShardsManagerFactorySpec extends BaseSpec {
+class LinesManagerFactorySpec extends BaseSpec {
 
   it must "reject invalid configuration files" in {
     //TODO.

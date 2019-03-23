@@ -28,23 +28,42 @@ trait ShardRoutes extends Directives with LazyLogging {
     */
   def keyValueRoutes(): Route = path("key" / IntNumber) { key =>
     get {
-      onComplete(handler.getInt(key)) {
+      onComplete(handler.getString(key)) {
         case Success(value) => complete(StatusCodes.OK -> value)
         case Failure(exception) => exception match {
           case KeyNotFoundException(_) => complete(StatusCodes.NotFound)
-          case _ =>
-            logger.error(s"Unrecognized error when obtaining value for key $key")
+          case e =>
+            logger.error(s"Unrecognized error when obtaining value for key $key", e)
             complete(StatusCodes.InternalServerError)
         }
       }
     } ~ put {
       entity(as[String]) { value =>
-        onComplete(handler.setInt(key, value)) {
+        onComplete(handler.setString(key, value)) {
           case Success(_) => complete(StatusCodes.Created)
-          case _ =>
-            logger.error(s"Unrecognized error while setting key $key with value $value")
+          case e =>
+            logger.error(s"Unrecognized error while setting key $key with value $value", e)
             complete(StatusCodes.InternalServerError)
         }
+      }
+    }
+  }
+
+  /**
+    * The `/count` endpoint.
+    * <ul>
+    *   <li>`GET /count`: Returns the number of stored keys with HTTP 200.</li>
+    * </ul>
+    *
+    * @return The `/key` endpoints.
+    */
+  def countRoutes(): Route = path("count") {
+    get {
+      onComplete(handler.count()) {
+        case Success(size) => complete(StatusCodes.OK -> size.toString)
+        case e =>
+          logger.error(s"Unrecognized error while obtaining count", e)
+          complete(StatusCodes.InternalServerError)
       }
     }
   }

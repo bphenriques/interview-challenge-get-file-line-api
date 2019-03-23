@@ -8,7 +8,7 @@ import akka.stream.ActorMaterializer
 import com.typesafe.scalalogging.LazyLogging
 
 import scala.concurrent.duration.{Duration, _}
-import scala.concurrent.{Await, ExecutionContext, ExecutionContextExecutor, Future}
+import scala.concurrent.{Await, ExecutionContext, Future}
 import scala.util.{Failure, Success, Try}
 
 /**
@@ -58,17 +58,14 @@ trait Server extends LazyLogging {
   /**
     * Perform any necessary operations before starting. Defaults to noop.
     */
-  protected def setup(): Try[Unit] = Success()
+  protected def setup(): Future[Unit] = Future.unit
 
   /**
     * Starts the server. This operation is blocking until the process is closed.
     */
   final def start(): Try[Server] = Try {
-    logger.info("Setting up server...")
-    setup()
-
     logger.info("Starting server...")
-    val binding: Future[Http.ServerBinding] = Http().bindAndHandle(routes, host, port)
+    val binding = setup().flatMap(_ => Http().bindAndHandle(routes, host, port))
 
     // Add coordinated shutdown that terminates the server gracefully on server shutdown. See notes on the class.
     CoordinatedShutdown(system).addTask(

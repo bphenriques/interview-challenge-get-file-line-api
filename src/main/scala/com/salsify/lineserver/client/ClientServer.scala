@@ -1,14 +1,16 @@
 package com.salsify.lineserver.client
 
+import java.util.concurrent.atomic.AtomicReference
+
 import akka.actor.ActorSystem
 import akka.http.scaladsl.server.Route
 import akka.stream.ActorMaterializer
 import com.salsify.lineserver.client.config.ClientServerConfig
+import com.salsify.lineserver.client.exception.DistributionShardUploadException
 import com.salsify.lineserver.common.server.Server
 
-import scala.concurrent.duration.Duration
-import scala.concurrent.{Await, ExecutionContext}
-import scala.util.Try
+import scala.concurrent.{ExecutionContext, Future}
+import scala.util.{Failure, Success}
 
 /**
   * Creates a Client server.
@@ -28,22 +30,57 @@ final class ClientServer(config: ClientServerConfig)(
 
   override val port: Int = config.binding.port
 
-  override val routes: Route = healthRoute() ~ linesRoutes()
+  override def routes: Route = healthRoute() ~ linesRoutes()
+
+  def createHandler(): ClientResource = new ClientResource(config.linesManager)
 
   /**
-    * The strategy used to setup the cluster with lines.
+    * @inheritdoc
+    *
+    * If the lines supplier is not provided, then it is a secondary client, therefore no setup is required.
     */
-  private val lineSupplier = config.linesSupplier
+  override def setup(): Future[Unit] = Future {
+    config.linesSupplier match {
+      case Some(linesSupplier) =>
+        logger.info(s"Reading lines using $linesSupplier' ...")
+        val numberOfLines = linesSupplier.size
+
+        // Atomic counter to have a consistent progress counter.
+        val processedLines: AtomicReference[Int] = new AtomicReference[Int](0)
+        val linesInsertedFuture: Seq[Future[Unit]] = linesSupplier.getLines().map { line =>
+          val setOperation = config.linesManager.setString(line.index, line.content)
+
+          // Report if success and throw exception if not.
+          setOperation.onComplete {
+            case Success(_)  => reportResult(numberOfLines, processedLines.getAndUpdate(current => current + 1))
+            case Failure(ex) => DistributionShardUploadException(line.index, line.content, ex)
+          }
+
+          setOperation
+        }
+
+        // The *lazy*  sequence of every line being set.
+        Future.sequence(linesInsertedFuture)
+          .map { _ =>
+            logger.info(s"Processed ${processedLines.get()} lines. Server is now ready to start.")
+          }
+      case _ =>
+        logger.info(s"No setup is required because this is not the primary client.")
+    }
+  }
 
   /**
-    * The strategy used to distribute the lines across the cluster.
+    * Reports progress of file upload.
+    *
+    * @param numberOfLines            Total number of lines.
+    * @param currentNumProcessedLines The current number of processed lines.
+    * @param frequency                The reporting frequency. Defaults to 10%.
     */
-  private val linesDistribution = config.linesDistribution
-
-  override val handler: ClientResource = new ClientResource(lineSupplier, linesDistribution)
-
-  override def setup(): Try[Unit] = Try {
-    val fileUpload = linesDistribution.setup(lineSupplier)
-    Await.result(fileUpload, Duration.Inf)
+  private def reportResult(numberOfLines: Int, currentNumProcessedLines: Int, frequency: Double = 0.10): Unit = {
+    import com.salsify.lineserver.common.enrichers.DoubleEnricher._
+    if ((currentNumProcessedLines % (numberOfLines * frequency)) ~= (0, precision = 1)) {
+      val percentage = 1.0f * currentNumProcessedLines / numberOfLines
+      logger.info(s"Processed $currentNumProcessedLines/$numberOfLines (${percentage * 100}%)")
+    }
   }
 }

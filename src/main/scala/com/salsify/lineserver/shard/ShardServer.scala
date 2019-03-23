@@ -6,7 +6,7 @@ import akka.stream.ActorMaterializer
 import com.salsify.lineserver.common.server._
 import com.salsify.lineserver.shard.config.ShardServerConfig
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 /**
   * Creates a Shard server.
@@ -26,7 +26,7 @@ class ShardServer(config: ShardServerConfig)(
 
   override val port: Int = config.binding.port
 
-  override val routes: Route = keyValueRoutes() ~ healthRoute()
+  override val routes: Route= keyValueRoutes() ~ countRoutes() ~ healthRoute()
 
   override val handler = new ShardResource()
 }

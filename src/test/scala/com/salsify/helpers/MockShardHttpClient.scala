@@ -28,7 +28,7 @@ class MockShardHttpClient(host: String, port: Int)(
     */
   private val resource = new ShardResource()
 
-  override def getInt(key: Int): Future[String] = resource.getInt(key)
+  override def getString(key: Int): Future[String] = resource.getString(key)
 
-  override def setInt(key: Int, value: String): Future[Unit] = resource.setInt(key, value)
+  override def setString(key: Int, value: String): Future[Unit] = resource.setString(key, value)
 }

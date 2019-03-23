@@ -2,9 +2,9 @@ package com.salsify.helpers
 
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
-import com.salsify.lineserver.client.manager.strategies.RoundRobinShardManagerConfig
+import com.salsify.lineserver.client.manager.strategies.RoundRobinLinesManagerConfig
 import com.salsify.lineserver.client.input.LinesInputSupplier
-import com.salsify.lineserver.client.manager.strategies.{RoundRobinShardManagerConfig, RoundRobinShardsManager}
+import com.salsify.lineserver.client.manager.strategies.{RoundRobinLinesManagerConfig, RoundRobinLinesManager}
 import com.salsify.lineserver.common.config.HostConfig
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -17,12 +17,12 @@ import scala.concurrent.{ExecutionContext, Future}
   * @param system           (implicit) The Akka actor system.
   * @param executionContext (implicit) The execution context.
   */
-class MockRoundRobinShardsManager(numberOfShards: Int)(
+class MockRoundRobinLinesManager(numberOfShards: Int)(
   override implicit val materializer: ActorMaterializer,
   override implicit val system: ActorSystem,
   override implicit val executionContext: ExecutionContext
-) extends RoundRobinShardsManager(
-  RoundRobinShardManagerConfig(List(HostConfig("placeholder", 8080)))
+) extends RoundRobinLinesManager(
+  RoundRobinLinesManagerConfig(List(HostConfig("placeholder", 8080)))
 ) {
   require(numberOfShards > 0)
 
@@ -41,7 +41,7 @@ class MockRoundRobinShardsManager(numberOfShards: Int)(
     */
   override def setup(lineSupplier: LinesInputSupplier): Future[Unit] = Future {
     lineSupplier.getLines().foreach { line =>
-      setInt(line.index, line.content)
+      setString(line.index, line.content)
     }
   }
 }

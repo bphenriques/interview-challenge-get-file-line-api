@@ -17,14 +17,16 @@ final class ShardResource(implicit val executionContext: ExecutionContext) exten
     */
   private val keyValueMap: mutable.Map[Int, String] = mutable.Map()
 
-  override def getInt(key: Int): Future[String] = Future {
+  override def getString(key: Int): Future[String] = Future {
     keyValueMap.get(key) match {
       case Some(line) => line
       case _          => throw KeyNotFoundException(key)
     }
   }
 
-  override def setInt(key: Int, value: String): Future[Unit] = Future {
+  override def setString(key: Int, value: String): Future[Unit] = Future {
     keyValueMap.put(key, value)
   }
+
+  override def count(): Future[Int] = Future { keyValueMap.size }
 }

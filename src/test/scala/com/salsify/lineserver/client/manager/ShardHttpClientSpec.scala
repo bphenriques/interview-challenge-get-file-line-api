@@ -29,7 +29,7 @@ class ShardHttpClientSpec extends BaseSpec {
 
     forAll (rows) { (lineNumber: Int, value: String) =>
       val targetShard = newMockShardClient("test", 8080)
-      whenReady(targetShard.setInt(lineNumber, value) flatMap (_ => targetShard.getInt(lineNumber))) { result =>
+      whenReady(targetShard.setString(lineNumber, value) flatMap (_ => targetShard.getString(lineNumber))) { result =>
         result shouldEqual value
       }
     }

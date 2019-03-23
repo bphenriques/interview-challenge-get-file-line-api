@@ -1,17 +1,35 @@
 version: "3.7"
 
 services:
-  client:
-    container_name: client
+  client-primary:
+    container_name: client-primary
     image: ${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_VERSION}
     ports:
-    - 8080:8080
+    - 8080
     depends_on:
       - shard1
       - shard2
     volumes:
-      - ./volumes/client.conf:/opt/docker/conf/application.conf
+      - ./volumes/client-primary.conf:/opt/docker/conf/application.conf
       - ${FILE}:/opt/file.txt
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  client-secondary:
+    container_name: client-secondary
+    image: ${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_VERSION}
+    deploy:
+      replicas: 2
+    ports:
+      # Do not bind to any specific port in the host so that we can connect through the load balancer.
+      - 8080
+    depends_on:
+      - client-primary
+    volumes:
+      - ./volumes/client-secondary.conf:/opt/docker/conf/application.conf
     healthcheck:
       test: ["CMD", "curl", "--fail", "http://localhost:8080/health"]
       interval: 30s
@@ -43,3 +61,13 @@ services:
       interval: 30s
       timeout: 10s
       retries: 5
+
+  nginx:
+    image: nginx:latest
+    volumes:
+      - ./volumes/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - client-primary
+      - client-secondary
+    ports:
+      - "4000:4000"

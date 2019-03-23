@@ -1,6 +1,11 @@
 # Salsify Line Server
 
-Displays the cost of a set of call records stored in a file.
+Server that serves a single immutable file  through a Rest API.
+
+## How it works?
+
+This system was built to scale both horizontally and vertically. There two main components:
+* The `client` 
 
 ## How to run
 
