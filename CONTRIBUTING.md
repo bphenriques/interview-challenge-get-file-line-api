@@ -79,8 +79,9 @@ Negative:
 * Could have more unit tests. For example: `<X>Config` classes.
 * Usage of a lock in `ShardResource`.
 
-The _code smells_ are identified with either a `FIXME` tag with the accompanied description, author and issue identifier
-so that the issue can be tackled in the future.
+The present issues are identified with either a `FIXME` tag with the accompanied description, author and issue identifier
+so that the issue can be tackled in the future. The current major nuisance that needs to be tackled is the flaky test
+due to the following [scalatest issue](https://github.com/scalatest/scalatest/issues/784)
 
 ## External libraries
 
