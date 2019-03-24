@@ -22,17 +22,15 @@ import scala.concurrent.ExecutionContext
   * @param system             (implicit) The Akka actor system.
   * @param executionContext   (implicit) The execution context.
   */
-class ShardServer(config: ShardServerConfig)(
+final class ShardServer(config: ShardServerConfig)(
   implicit val system: ActorSystem,
   implicit val materializer: ActorMaterializer,
   implicit val executionContext: ExecutionContext
-) extends Server with ShardRoutes {
+) extends Server {
 
   override val host: String = config.binding.host
 
   override val port: Int = config.binding.port
 
-  override def routes(): Route = keyValueRoutes() ~ countRoutes() ~ healthRoute()
-
-  override val handler = new ShardResource()
+  override protected def routesProvider(): RoutesProvider = new ShardRoutes()
 }

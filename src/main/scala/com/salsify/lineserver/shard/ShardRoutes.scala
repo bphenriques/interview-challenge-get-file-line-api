@@ -6,22 +6,36 @@
 
 package com.salsify.lineserver.shard
 
+import akka.actor.ActorSystem
 import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.server.{Directives, Route}
+import akka.stream.ActorMaterializer
+import com.salsify.lineserver.common.server.RoutesProvider
 import com.salsify.lineserver.shard.exception.KeyNotFoundException
 import com.typesafe.scalalogging.LazyLogging
 
+import scala.concurrent.ExecutionContext
 import scala.util.{Failure, Success}
 
 /**
   * Akka routes that makes available the key-value store.
+  *
+  * @param materializer       (implicit) The Akka actor materializer.
+  * @param system             (implicit) The Akka actor system.
+  * @param executionContext   (implicit) The execution context.
   */
-trait ShardRoutes extends Directives with LazyLogging {
+final class ShardRoutes(
+  implicit val system: ActorSystem,
+  implicit val materializer: ActorMaterializer,
+  implicit val executionContext: ExecutionContext
+) extends RoutesProvider with Directives with LazyLogging {
+
+  override def routes(): Route = healthRoute() ~ keyValueRoutes() ~ countRoutes()
 
   /**
     * The routes handler.
     */
-  val handler: ShardResource
+  private val handler: ShardResource = new ShardResource()
 
   /**
     * The `/key` endpoints.

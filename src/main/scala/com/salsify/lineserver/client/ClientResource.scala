@@ -24,10 +24,10 @@ import scala.concurrent.duration._
 final class ClientResource(linesManager: LinesManager) extends Client with LazyLogging {
 
   /**
-    * Stores the number of available lines. Not accessing the manager itself b/c it is slower as it uses
+    * Stores the number of available lines. It is lazy b/c the secondary server does not know the number of lines.
     */
   private val numberOfAvailableLines = {
-    val result = Await.result(linesManager.count(), 30 seconds)
+    val result = Await.result(linesManager.count(), 30.seconds)
     logger.info(s"Read $result from the lines manager.")
     result
   }

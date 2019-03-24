@@ -9,10 +9,9 @@ package com.salsify.lineserver.client
 import java.util.concurrent.atomic.AtomicReference
 
 import akka.actor.ActorSystem
-import akka.http.scaladsl.server.Route
 import akka.stream.ActorMaterializer
 import com.salsify.lineserver.client.config.ClientServerConfig
-import com.salsify.lineserver.common.server.Server
+import com.salsify.lineserver.common.server.{RoutesProvider, Server}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -28,15 +27,13 @@ final class ClientServer(config: ClientServerConfig)(
   implicit val system: ActorSystem,
   implicit val materializer: ActorMaterializer,
   implicit val executionContext: ExecutionContext
-) extends Server with ClientRoutes {
+) extends Server {
 
   override val host: String = config.binding.host
 
   override val port: Int = config.binding.port
 
-  override def routes(): Route = healthRoute() ~ linesRoutes()
-
-  override def createHandler(): ClientResource = new ClientResource(config.linesManager)
+  override protected def routesProvider(): RoutesProvider = new ClientRoutes(config.linesManager)
 
   /**
     * @inheritdoc

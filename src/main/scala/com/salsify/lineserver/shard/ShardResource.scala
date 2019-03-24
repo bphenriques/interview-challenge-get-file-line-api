@@ -27,7 +27,7 @@ final class ShardResource(implicit val executionContext: ExecutionContext) exten
   private val keyValueMap: mutable.Map[Int, String] = mutable.Map()
 
   /**
-    * A lock.
+    * A write-lock to guard the keys.
     *
     * FIXME: It is not required as there are no updates in this project's use-case.
     * This was required due to a unknown error where the count() is not consistent with set of keys stored.

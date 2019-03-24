@@ -1,4 +1,4 @@
-version: "3.7"
+version: '2.1'
 
 services:
   client-primary:
@@ -8,8 +8,10 @@ services:
       # Do not bind to any specific port in the host so that we can connect through the load balancer.
     - 8080
     depends_on:
-      - shard1
-      - shard2
+      shard1:
+        condition: service_healthy
+      shard2:
+        condition: service_healthy
     volumes:
       - ./volumes/client-primary.conf:/opt/docker/conf/application.conf
       - ${FILE}:/opt/file.txt
@@ -26,9 +28,10 @@ services:
       # Do not bind to any specific port in the host so that we can connect through the load balancer.
       - 8080
     depends_on:
-      - client-primary
+      client-primary:
+        condition: service_healthy
     volumes:
-      - ./volumes/client-secondary.conf:/opt/docker/conf/application.conf
+     - ./volumes/client-secondary.conf:/opt/docker/conf/application.conf
     healthcheck:
       test: ["CMD", "curl", "--fail", "http://localhost:8080/health"]
       interval: 30s
@@ -67,7 +70,9 @@ services:
     volumes:
       - ./volumes/nginx.conf:/etc/nginx/nginx.conf:ro
     depends_on:
-      - client-primary
-      - client-secondary
+      client-primary:
+        condition: service_healthy
+      client-secondary:
+        condition: service_healthy
     ports:
       - "8080:8080"

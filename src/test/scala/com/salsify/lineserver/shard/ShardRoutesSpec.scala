@@ -15,20 +15,17 @@ import com.salsify.helpers.BaseSpec
   */
 class ShardRoutesSpec extends BaseSpec {
 
-  def createShardsRoutes(): ShardRoutes = new ShardRoutes {
-    override val handler: ShardResource = new ShardResource()
-  }
-
   it must "return HTTP 200 in healthcheck" in {
-    val routes = createShardsRoutes()
+    val routes = new ShardRoutes()
     Get("/health") ~> routes.healthRoute() ~> check {
       status shouldEqual StatusCodes.OK
     }
   }
 
   it must "return HTTP 404 if the key was not set" in {
-    val routes = createShardsRoutes()
     val rows = Table("Key", 0, 6)
+
+    val routes = new ShardRoutes()
     forAll (rows) { key: Int =>
       Get(s"/key/$key") ~> routes.keyValueRoutes() ~> check {
         status shouldEqual StatusCodes.NotFound
@@ -48,7 +45,7 @@ class ShardRoutesSpec extends BaseSpec {
       ("Value 5", 5)
     )
 
-    val routes = createShardsRoutes()
+    val routes = new ShardRoutes()
     forAll (rows) { (value: String, key: Int) =>
       Put(s"/key/$key", value) ~> routes.keyValueRoutes() ~> check {
         status shouldEqual StatusCodes.Created
@@ -74,7 +71,7 @@ class ShardRoutesSpec extends BaseSpec {
       ("Value 5", 5)
     )
 
-    val routes = createShardsRoutes()
+    val routes = new ShardRoutes()
     // Check count before any key is inserted.
     Get("/count") ~> routes.countRoutes() ~> check {
       status shouldEqual StatusCodes.OK

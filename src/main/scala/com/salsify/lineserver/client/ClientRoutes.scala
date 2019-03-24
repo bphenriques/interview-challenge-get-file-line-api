@@ -11,7 +11,10 @@ import akka.http.caching.scaladsl.Cache
 import akka.http.scaladsl.server.directives.CachingDirectives._
 import akka.http.scaladsl.model.{ContentTypes, HttpEntity, StatusCodes, Uri}
 import akka.http.scaladsl.server.{Directives, RequestContext, Route, RouteResult}
+import akka.stream.ActorMaterializer
 import com.salsify.lineserver.client.exception.LineNotFoundException
+import com.salsify.lineserver.client.manager.LinesManager
+import com.salsify.lineserver.common.server.RoutesProvider
 import com.typesafe.scalalogging.LazyLogging
 
 import scala.concurrent.ExecutionContext
@@ -19,28 +22,24 @@ import scala.util.{Failure, Success}
 
 /**
   * Main Akka routes that publicly makes available the lines.
+  *
+  * @param linesManager       The lines manager.
+  * @param materializer       (implicit) The Akka actor materializer.
+  * @param system             (implicit) The Akka actor system.
+  * @param executionContext   (implicit) The execution context.
   */
-trait ClientRoutes extends Directives with LazyLogging {
+final class ClientRoutes(linesManager: LinesManager)(
+  implicit val system: ActorSystem,
+  implicit val materializer: ActorMaterializer,
+  implicit val executionContext: ExecutionContext
+) extends RoutesProvider with Directives with LazyLogging {
+
+  override def routes(): Route = healthRoute() ~ linesRoutes()
 
   /**
     * The routes handler.
-    *
-    * FIXME: Remove the lazy handler instantiation. Currently is required b/c the handler is created prematurely before
-    * the server has performed its setup despite the current attempts otherwise.
-    *
-    * BH-3 | Bruno Henriques (brunoaphenriques@gmail.com)
     */
-  lazy val handler: ClientResource = createHandler()
-
-  /**
-    * The Akka actor system.
-    */
-  implicit val system: ActorSystem
-
-  /**
-    * The execution context.
-    */
-  implicit val executionContext: ExecutionContext
+  private val handler: ClientResource = new ClientResource(linesManager)
 
   /**
     * The cache key: The full uri.
@@ -53,13 +52,6 @@ trait ClientRoutes extends Directives with LazyLogging {
     * The lines cache.
     */
   private val lineCache: Cache[Uri, RouteResult] = routeCache[Uri]
-
-  /**
-    * Creates the handler.
-    *
-    * @return The handler.
-    */
-  def createHandler(): ClientResource
 
   /**
     * The `/lines` endpoints.

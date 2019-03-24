@@ -30,14 +30,10 @@ $ ./run <file-location>
 
 Where `<file-location>` is the location of the file that is going to be available in the server.
 
-This command will launch a server with 2 clients, 2 shards and one load balancer. The server will be ready once you see
-the following line:
+This command will launch a server with 2 clients, 2 shards and one load balancer. The server will be ready once the
+load balancer starts. You can always check the logs by running `docker logs -f client-primary`.
 
-```
-client-primary      | 2019-03-24 15:57:13 INFO  c.s.lineserver.client.ClientServer - Server available at 0.0.0.0:8080
-```
-
-At this stage the containers should be `healthy`. You may access the client's REST API:
+Once the server is ready (all containers should be `healthy`). You may perform HTTP requests:
 
 ```bash
 $ curl -I -XGET "localhost:8080/lines/1000"
@@ -52,15 +48,13 @@ The current project took 2 weeks of development time.
 
 The following list summarizes the tasks that would have been explored (ordered) with unlimited time and resources:
 1. Compression/decompression of HTTP requests/responses ([link](https://doc.akka.io/docs/akka-http/current/common/encoding.html)).
-2. Increase code coverage through unit tests.
+2. Add more unit tests to increase code coverage.
 3. Add system tests using (but not limited to) [test containers](https://www.testcontainers.org/).
 4. Add performance tests using (but not limited to) [Gatling](https://gatling.io/).
 5. Support HTTPS communication between the `clients` and the `shards`.
 6. Document the Rest API using [swagger](https://swagger.io/) ([example](https://blog.knoldus.com/swagger-ui-with-akka-http/)).
-7 Fix flaky test due to a scalatest [open issue](https://github.com/scalatest/scalatest/issues/784).
-8. Avoid lazy construction of `ClientResource` in `ClientRoutes`. Despite its low impact and priority, it is technical debt.
-9. Remove lock in `ShardResource` as it only exists to solve a minor issue that only impacts startup. 
-   Despite its low impact and priority, it is technical debt.
+7 Fix flaky tests due to a scalatest [open issue](https://github.com/scalatest/scalatest/issues/784).
+9. Remove lock in `ShardResource` as it only exists to solve a minor issue that only impacts startup.
 10. Investigate how to reduce the docker image size.
 
 Depending on the performance tests, two additional points would be tackled:
@@ -74,8 +68,8 @@ Positive:
 * Simple system design that allows scaling both vertical and horizontal the system to accommodate either bigger files
   or more clients.
 * Capability of launching either a shard or a client from the same application by changing the configuration file.
-* Lines Supplier Abstraction in package `com.salsify.lineserver.client.input`. This allows easily extending the system
-  to support, for example, reading large files from an S3 bucket.
+* Lines Supplier Abstraction (in package `com.salsify.lineserver.client.input`) that allows extending the system to 
+  support, for example, obtaining lines from a file stored in a AWS S3 bucket.
 * Usage of cache in the `client` to avoid expensive network requests to a `shard`.
 * Backpressure queue (see `ShardHttpClient`) to handle spikes.
 * Documentation.
@@ -83,12 +77,10 @@ Positive:
 
 Negative:
 * Could have more unit tests. For example: `<X>Config` classes.
-* Lazy construction of `ClientResource` in `ClientRoutes`.
 * Usage of a lock in `ShardResource`.
-* Code smell in `class ClientRoutesSpec extends BaseSpec with ClientRoutes`.
 
 The _code smells_ are identified with either a `FIXME` tag with the accompanied description, author and issue identifier
-so that the issue can be tackled in the future. 
+so that the issue can be tackled in the future.
 
 ## External libraries
 

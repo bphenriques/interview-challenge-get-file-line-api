@@ -53,8 +53,8 @@ lazy val packagingSettings = Seq(
   // Add LICENSE file.
   mappings in Universal += file("LICENSE") -> "LICENSE",
 
-  // Add README.md.
-  mappings in Universal += file("README.md") -> "README.md",
+  // Add README.
+  mappings in Universal += file("README") -> "README",
 
   // Add -Dconfig.file to use the configuration file in the conf folder.
   bashScriptExtraDefines += s"""addJava "-Dconfig.file=$${app_home}/../conf/$ConfigurationFile"""",
