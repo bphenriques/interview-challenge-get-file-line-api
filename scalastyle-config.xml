@@ -1,3 +1,10 @@
+<!--
+  ~ /*
+  ~  * © Copyright 2019 Bruno Henriques
+  ~  */
+  ~
+  -->
+
 <scalastyle>
  <name>Scalastyle standard configuration</name>
  <check level="warning" class="org.scalastyle.file.FileTabChecker" enabled="true"></check>

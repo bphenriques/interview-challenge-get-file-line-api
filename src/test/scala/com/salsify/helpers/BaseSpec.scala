@@ -1,5 +1,8 @@
 /*
- * © Copyright 2019 Bruno Henriques
+ *
+ *  * © Copyright 2019 Bruno Henriques
+ *
+ *
  */
 
 package com.salsify.helpers

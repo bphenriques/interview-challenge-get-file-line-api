@@ -1,5 +1,8 @@
 /*
- * © Copyright 2019 Bruno Henriques
+ *
+ *  * © Copyright 2019 Bruno Henriques
+ *  
+ *
  */
 
 import sbt._

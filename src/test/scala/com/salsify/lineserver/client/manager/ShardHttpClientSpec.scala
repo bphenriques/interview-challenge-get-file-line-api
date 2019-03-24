@@ -1,3 +1,10 @@
+/*
+ *
+ *  * © Copyright 2019 Bruno Henriques
+ *
+ *
+ */
+
 package com.salsify.lineserver.client.manager
 
 import com.salsify.helpers.BaseSpec
@@ -10,7 +17,6 @@ class ShardHttpClientSpec extends BaseSpec {
   it must "make available the value as soon as it was set" in {
     val rows = Table(
       ("Key", "Value"),
-      (-1, "Value -1"),
       (0, "Value 0"),
       (1, "Value 1"),
       (2, "Value 2"),

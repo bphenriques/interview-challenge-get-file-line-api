@@ -79,6 +79,7 @@ Positive:
 * Usage of cache in the `client` to avoid expensive network requests to a `shard`.
 * Backpressure queue (see `ShardHttpClient`) to handle spikes.
 * Separation of concerns (through packaging and abstractions)
+* Documentation.
 * Small classes.
 
 Negative:

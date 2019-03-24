@@ -1,3 +1,10 @@
+/*
+ *
+ *  * © Copyright 2019 Bruno Henriques
+ *
+ *
+ */
+
 package com.salsify.helpers
 
 import akka.actor.ActorSystem

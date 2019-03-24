@@ -1,3 +1,10 @@
+/*
+ *
+ *  * © Copyright 2019 Bruno Henriques
+ *
+ *
+ */
+
 package com.salsify.lineserver.shard.config
 
 import com.salsify.lineserver.common.config.ServerBindingConfig

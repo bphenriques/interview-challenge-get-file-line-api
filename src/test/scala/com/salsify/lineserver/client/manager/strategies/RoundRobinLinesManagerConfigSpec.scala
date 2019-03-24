@@ -1,3 +1,10 @@
+/*
+ *
+ *  * © Copyright 2019 Bruno Henriques
+ *
+ *
+ */
+
 package com.salsify.lineserver.client.manager.strategies
 
 import com.salsify.helpers.BaseSpec

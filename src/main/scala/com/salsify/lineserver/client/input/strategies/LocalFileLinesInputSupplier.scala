@@ -1,3 +1,10 @@
+/*
+ *
+ *  * © Copyright 2019 Bruno Henriques
+ *
+ *
+ */
+
 package com.salsify.lineserver.client.input.strategies
 
 import com.salsify.lineserver.client.input.LinesInputSupplier
