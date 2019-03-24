@@ -10,8 +10,10 @@ class ClientResourceSpec extends BaseSpec {
 
   it must "reject the line if outside of the range" in {
     val rows = Table("Line Number", -1, 0, 6)
+
+    val sampleClientResource = new ClientResource(createCluster(3, Some(getResource("sample.txt"))))
     forAll (rows) { lineNumber: Int =>
-      whenReady(SampleClientResource.get(lineNumber).failed) { e =>
+      whenReady(sampleClientResource.get(lineNumber).failed) { e =>
         e shouldBe a[LineNotFoundException]
         e.asInstanceOf[LineNotFoundException].lineNumber shouldEqual lineNumber
       }
@@ -28,15 +30,17 @@ class ClientResourceSpec extends BaseSpec {
       ("Line 5", 5)
     )
 
+    val sampleClientResource = new ClientResource(createCluster(3, Some(getResource("sample.txt"))))
     forAll (rows) { (line: String, lineNumber: Int) =>
-      whenReady(SampleClientResource.get(lineNumber)) { result =>
+      whenReady(sampleClientResource.get(lineNumber)) { result =>
         result shouldEqual line
       }
     }
   }
 
   it must "reject line 1 if the file is empty" in {
-    whenReady(EmptyClientResource.get(1).failed) { e =>
+    val sampleClientResource = new ClientResource(createCluster(3))
+    whenReady(sampleClientResource.get(1).failed) { e =>
       e shouldBe a[LineNotFoundException]
       e.asInstanceOf[LineNotFoundException].lineNumber shouldEqual 1
     }

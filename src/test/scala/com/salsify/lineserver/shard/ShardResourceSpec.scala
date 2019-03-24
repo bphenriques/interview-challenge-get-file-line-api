@@ -9,8 +9,9 @@ import com.salsify.lineserver.shard.exception.KeyNotFoundException
 class ShardResourceSpec extends BaseSpec {
 
   it must "reject keys if they were not inserted before" in {
-    val shardResource = new ShardResource()
     val rows = Table("Key", -1, 2, 6)
+
+    val shardResource = new ShardResource()
     forAll (rows) { key: Int =>
       whenReady(shardResource.getString(key).failed) { e =>
         e shouldBe a[KeyNotFoundException]

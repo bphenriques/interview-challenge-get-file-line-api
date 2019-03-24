@@ -21,7 +21,7 @@ import scala.concurrent.{ExecutionContext, Future}
 final class ClientServer(config: ClientServerConfig)(
   implicit val system: ActorSystem,
   implicit val materializer: ActorMaterializer,
-  implicit val executionContext: ExecutionContext,
+  implicit val executionContext: ExecutionContext
 ) extends Server with ClientRoutes {
 
   override val host: String = config.binding.host

@@ -1,6 +1,6 @@
 package com.salsify.lineserver.shard
 
-import java.util.concurrent.atomic.AtomicReference
+import java.util.concurrent.locks.ReentrantLock
 
 import com.salsify.lineserver.shard.exception.KeyNotFoundException
 import com.typesafe.scalalogging.LazyLogging
@@ -21,9 +21,10 @@ final class ShardResource(implicit val executionContext: ExecutionContext) exten
   private val keyValueMap: mutable.Map[Int, String] = mutable.Map()
 
   /**
-    * Guarantees count consistency.
+    * A lock. This was required due to a unknown error where the count() is not consistent with set of keys stored.
+    * It is a odd by nature, however setString is only done in start-up time, therefore it does not impact the clients.
     */
-  private val numberOfElements = new AtomicReference[Int](0)
+  private val lock = new ReentrantLock()
 
   override def getString(key: Int): Future[String] = Future {
     keyValueMap.get(key) match {
@@ -33,10 +34,13 @@ final class ShardResource(implicit val executionContext: ExecutionContext) exten
   }
 
   override def setString(key: Int, value: String): Future[Unit] = Future {
+    lock.lock()
     logger.trace(s"$key = '$value'")
     keyValueMap.put(key, value)
-    numberOfElements.updateAndGet(_ + 1)
+    lock.unlock()
   }
 
-  override def count(): Future[Int] = Future { numberOfElements.get() }
+  override def count(): Future[Int] = Future {
+    keyValueMap.keys.size
+  }
 }

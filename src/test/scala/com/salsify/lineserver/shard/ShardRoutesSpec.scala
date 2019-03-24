@@ -61,7 +61,6 @@ class ShardRoutesSpec extends BaseSpec {
       ("Response", "Key"),
       ("Value 0", 0), //Key 0 should be accepted b/c it is a valid non-negative Integer.
       ("Value 1", 1),
-      ("Value 1", 1),
       ("Value 2", 2),
       ("Value 3", 3),
       ("Value 4", 4),

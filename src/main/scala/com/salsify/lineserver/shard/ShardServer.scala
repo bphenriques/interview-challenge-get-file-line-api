@@ -19,7 +19,7 @@ import scala.concurrent.ExecutionContext
 class ShardServer(config: ShardServerConfig)(
   implicit val system: ActorSystem,
   implicit val materializer: ActorMaterializer,
-  implicit val executionContext: ExecutionContext,
+  implicit val executionContext: ExecutionContext
 ) extends Server with ShardRoutes {
 
   override val host: String = config.binding.host

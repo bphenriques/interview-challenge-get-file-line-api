@@ -6,7 +6,7 @@ import com.salsify.lineserver.shard.exception.KeyNotFoundException
 import scala.concurrent.Future
 
 /**
-  * Interface to manage shards. The interface contains elements of [[Shard]].
+  * Interface to manage shards. This interface is similar to [[Shard]].
   */
 trait LinesManager {
 

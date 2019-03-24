@@ -28,9 +28,9 @@ trait Shard {
   def setString(key: Int, value: String): Future[Unit]
 
   /**
-    * Returns the number of stores rows.
+    * Returns the number of values stored. It is not thread-safe, therefore the values may be inconsistent.
     *
-    * @return The future with the number of stored rows.
+    * @return The future with the number of va rows.
     */
   def count(): Future[Int]
 }

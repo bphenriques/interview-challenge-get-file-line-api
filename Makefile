@@ -1,6 +1,6 @@
 .PHONY: all clean compile lint test package
 
-all: clean compile lint test package
+all: clean compile lint test docker-build
 
 # Cleans the project.
 clean:
@@ -18,9 +18,10 @@ lint:
 test:
 	sbt test
 
-# Generates a distributable ZIP file under target/universal/*.zip
-package: clean
-	sbt universal:packageBin
+# Builds docker image.
+docker-build:
+	sbt docker:publishLocal
 
-docker-publish:
-    sbt docker:publishLocal
+# Start the line server.
+start:
+	cd docker && docker-compose up

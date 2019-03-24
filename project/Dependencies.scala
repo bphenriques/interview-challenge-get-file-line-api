@@ -16,7 +16,6 @@ object Dependencies {
     lazy val scalaLogging           = "3.9.2"
     lazy val akkaHttpVersion        = "10.1.7"
     lazy val akkaVersion            = "2.5.21"
-    lazy val sprayCaching           = "1.3.4"
   }
 
   // Testing

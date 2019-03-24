@@ -40,12 +40,7 @@ class ShardHttpClient(config: ShardHttpClientConfig)(
   /**
     * The connection pool to handle requests
     */
-  private val connectionPool = if (host.contains("https")) {
-    Http().cachedHostConnectionPoolHttps[Promise[HttpResponse]](host.replace("https://", ""), port)
-  }
-  else {
-    Http().cachedHostConnectionPool[Promise[HttpResponse]](host.replace("http://", ""), port)
-  }
+  private val connectionPool = Http().cachedHostConnectionPool[Promise[HttpResponse]](host.replace("http://", ""), port)
 
   /**
     * The size of internal queue to handle spikes.

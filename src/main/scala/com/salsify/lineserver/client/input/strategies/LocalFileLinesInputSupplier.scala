@@ -9,13 +9,6 @@ import scala.io.Source
 /**
   * Supplies lines from a local file. Each line is delimited by a new line character.
   *
-  * Initialization may be slow as it reads the number of lines from the file.
-  *
-  * @note This metadata is requires so that the Line Server client can reject requests before contacting the shard which
-  *       is a network call (expensive). The alternative, is to know before hand the number of lines in the file (e.g.,
-  *       through the configuration). However the benefits are limited as this is only done **once before** the server
-  *       starts.
-  *
   * @param config The configuration.
   */
 final class LocalFileLinesInputSupplier(

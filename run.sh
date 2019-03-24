@@ -3,8 +3,5 @@
 
 # Full path to the file you wish to serve.
 export FILE="$1"
-
-cd docker
-docker-compose up
-
+make start
 

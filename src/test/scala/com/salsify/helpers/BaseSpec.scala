@@ -7,7 +7,6 @@ package com.salsify.helpers
 import java.io.File
 
 import akka.http.scaladsl.testkit.ScalatestRouteTest
-import com.salsify.lineserver.client.ClientResource
 import com.salsify.lineserver.client.input.strategies.{LocalFileLinesInputSupplier, LocalFileLinesInputSupplierConfig}
 import com.salsify.lineserver.client.manager.ShardHttpClient
 import com.salsify.lineserver.shard.Shard
@@ -29,29 +28,22 @@ class BaseSpec extends FlatSpec with Matchers with TableDrivenPropertyChecks wit
   val executionContext: ExecutionContext = executor
 
   /**
-    * Lines Provider given a sample file with few lines.
+    * Creates a mock cluster.
+    *
+    * @param numberOfShards Number of shards.
+    * @param file           Optional file to be served.
+    * @return The mocked cluster.
     */
-  val SampleLinesProvider = LocalFileLinesInputSupplier(LocalFileLinesInputSupplierConfig(getResource("sample.txt")))
+  def createCluster(numberOfShards: Int, file: Option[File] = None): MockRoundRobinLinesManager = {
+    val cluster = new MockRoundRobinLinesManager(numberOfShards)
 
-  /**
-    * Cluster that serves the sample file.
-    */
-  val SampleCluster: MockRoundRobinLinesManager = {
-    val cluster = new MockRoundRobinLinesManager(3)
-    val insert = SampleLinesProvider.getLines().map(l => cluster.setString(l.index, l.content))
-    Await.result(Future.sequence(insert), Duration.Inf)
+    if (file.isDefined) {
+      val linesProvider = LocalFileLinesInputSupplier(LocalFileLinesInputSupplierConfig(file.get))
+      val insert = linesProvider.getLines().map(l => cluster.setString(l.index, l.content))
+      Await.result(Future.sequence(insert), Duration.Inf)
+    }
     cluster
   }
-
-  /**
-    * Routes resource that serves the sample file.
-    */
-  val SampleClientResource = new ClientResource(SampleCluster)
-
-  /**
-    * Routes resource that serves the empty file.
-    */
-  val EmptyClientResource = new ClientResource(new MockRoundRobinLinesManager(3))
 
   /**
     * Gets a resource file.

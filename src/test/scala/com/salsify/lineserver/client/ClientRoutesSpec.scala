@@ -8,7 +8,7 @@ import com.salsify.helpers.BaseSpec
   */
 class ClientRoutesSpec extends BaseSpec with ClientRoutes {
 
-  override def createHandler(): ClientResource = SampleClientResource
+  override def createHandler(): ClientResource = new ClientResource(createCluster(3, Some(getResource("sample.txt"))))
 
   it must "return HTTP 200 in healthcheck" in {
     Get("/health") ~> healthRoute() ~> check {
