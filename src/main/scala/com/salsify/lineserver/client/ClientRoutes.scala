@@ -28,7 +28,7 @@ trait ClientRoutes extends Directives with LazyLogging {
     * FIXME: Remove the lazy handler instantiation. Currently is required b/c the handler is created prematurely before
     * the server has performed its setup despite the current attempts otherwise.
     *
-    * <issue-id> | Bruno Henriques (brunoaphenriques@gmail.com)
+    * BH-3 | Bruno Henriques (brunoaphenriques@gmail.com)
     */
   lazy val handler: ClientResource = createHandler()
 
