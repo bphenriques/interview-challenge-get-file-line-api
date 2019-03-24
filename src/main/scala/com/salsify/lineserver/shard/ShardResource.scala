@@ -29,7 +29,8 @@ final class ShardResource(implicit val executionContext: ExecutionContext) exten
   /**
     * A lock.
     *
-    * FIXME: This was required due to a unknown error where the count() is not consistent with set of keys stored.
+    * FIXME: It is not required as there are no updates in this project's use-case.
+    * This was required due to a unknown error where the count() is not consistent with set of keys stored.
     * It is a odd by nature, however setString is only done in start-up time, therefore it does not impact the clients.
     *
     * <issue-id> | Bruno Henriques (brunoaphenriques@gmail.com)

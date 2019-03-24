@@ -12,6 +12,11 @@ import com.salsify.helpers.BaseSpec
 
 /**
   * Tests [[ClientRoutes]].
+  *
+  * FIXME: Remove trait mix-in `ClientRoutes` in favor of lambda instantiation which is far more flexible. When moving
+  * to another class, a null-pointer exception occurs when reading the Akka Cache configuration.
+  *
+  * <issue-id> | Bruno Henriques (brunoaphenriques@gmail.com)
   */
 class ClientRoutesSpec extends BaseSpec with ClientRoutes {
 

@@ -84,11 +84,11 @@ trait Server extends LazyLogging {
       case Success(bound) =>
         logger.info(s"Server available at ${bound.localAddress.getHostString}:${bound.localAddress.getPort}")
       case Failure(e) =>
-        logger.error("Server failed to start", e)
+        logger.error("Binding Failure. Shutting down the server.", e)
         shutdown(binding)
     }
 
-    // Blocking the call
+    // Blocking the call.
     Await.result(system.whenTerminated, Duration.Inf)
     this
   }
@@ -102,7 +102,7 @@ trait Server extends LazyLogging {
   final def shutdown(binding: Future[Http.ServerBinding]): Future[Done] = {
     logger.info("Shutting down...")
     binding
-      .flatMap(_.terminate(hardDeadline = 1.minute))
+      .flatMap(_.terminate(hardDeadline = 1 minute))
       .flatMap { _ => system.terminate() }
       .map { _ => Done }
   }

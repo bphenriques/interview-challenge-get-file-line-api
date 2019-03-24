@@ -85,9 +85,11 @@ Positive:
 Negative:
 * Could have more unit tests. For example: `<X>Config` classes.
 * Lazy construction of `ClientResource` in `ClientRoutes`.
-* Usage of a lock in `ShardResource` in this use-case. It is not required as there are no updates. Issue in the line.
-* Code smell in `class ClientRoutesSpec extends BaseSpec with ClientRoutes`. Investigated alternative but having 
-  internal null-pointer in Akka.
+* Usage of a lock in `ShardResource`.
+* Code smell in `class ClientRoutesSpec extends BaseSpec with ClientRoutes`. 
+
+The _code smells_ are identified with either a `FIXME` tag with the accompanied description, author and issue identifier
+so that the issue can be tackled in the future. 
 
 ## External libraries
 
