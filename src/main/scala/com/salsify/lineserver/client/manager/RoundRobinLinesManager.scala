@@ -2,14 +2,12 @@
  *
  *  * © Copyright 2019 Bruno Henriques
  *
- *
  */
 
-package com.salsify.lineserver.client.manager.strategies
+package com.salsify.lineserver.client.manager
 
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
-import com.salsify.lineserver.client.manager.{LinesManager, ShardHttpClient}
 import com.salsify.lineserver.shard.Shard
 import com.typesafe.scalalogging.LazyLogging
 

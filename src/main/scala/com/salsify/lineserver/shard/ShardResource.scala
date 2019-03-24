@@ -2,7 +2,6 @@
  *
  *  * © Copyright 2019 Bruno Henriques
  *
- *
  */
 
 package com.salsify.lineserver.shard
@@ -28,8 +27,12 @@ final class ShardResource(implicit val executionContext: ExecutionContext) exten
   private val keyValueMap: mutable.Map[Int, String] = mutable.Map()
 
   /**
-    * A lock. This was required due to a unknown error where the count() is not consistent with set of keys stored.
+    * A lock.
+    *
+    * FIXME: This was required due to a unknown error where the count() is not consistent with set of keys stored.
     * It is a odd by nature, however setString is only done in start-up time, therefore it does not impact the clients.
+    *
+    * <issue-id> | Bruno Henriques (brunoaphenriques@gmail.com)
     */
   private val lock = new ReentrantLock()
 

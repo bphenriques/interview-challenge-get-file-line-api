@@ -2,7 +2,6 @@
  *
  *  * © Copyright 2019 Bruno Henriques
  *
- *
  */
 
 package com.salsify.lineserver.client.config
@@ -10,7 +9,7 @@ package com.salsify.lineserver.client.config
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
 import com.salsify.lineserver.client.input.{LinesInputSupplier, LinesInputSupplierFactory}
-import com.salsify.lineserver.client.manager.{LinesManager, LinesManagerFactory}
+import com.salsify.lineserver.client.manager.{LinesManager, RoundRobinLinesManager, RoundRobinLinesManagerConfig}
 import com.salsify.lineserver.common.config.ServerBindingConfig
 import com.typesafe.config.Config
 
@@ -51,12 +50,12 @@ object ClientServerConfig {
     system: ActorSystem,
     executionContext: ExecutionContext
   ): Try[ClientServerConfig] = for {
-    httpConfig        <- conf.getConfig("http").read[ServerBindingConfig](ServerBindingConfig.from)
-    linesManager      <- LinesManagerFactory.from(conf.getConfig("manager"))
+    httpConfig          <- conf.getConfig("http").read[ServerBindingConfig](ServerBindingConfig.from)
+    linesManagerConfig  <- conf.getConfig("manager.shards-round-robin").read[RoundRobinLinesManagerConfig](RoundRobinLinesManagerConfig.from)
   } yield ClientServerConfig(
     httpConfig,
     Try(LinesInputSupplierFactory.from(conf.getConfig("input"))).toOption.map(_.get),
-    linesManager
+    new RoundRobinLinesManager(linesManagerConfig)
   )
 }
 

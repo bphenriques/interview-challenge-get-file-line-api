@@ -2,13 +2,11 @@
  *
  *  * © Copyright 2019 Bruno Henriques
  *
- *
  */
 
-package com.salsify.lineserver.client.manager.strategies
+package com.salsify.lineserver.client.manager
 
 import com.salsify.helpers.BaseSpec
-import com.salsify.lineserver.client.manager.ShardHttpClientConfig
 
 /**
   * Tests [[RoundRobinLinesManagerConfig]].

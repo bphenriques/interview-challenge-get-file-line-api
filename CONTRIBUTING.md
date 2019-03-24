@@ -55,7 +55,7 @@ The following list summarizes the tasks that would have been explored (ordered) 
 2. Increase code coverage through unit tests.
 3. Add system tests using (but not limited to) [test containers](https://www.testcontainers.org/).
 4. Add performance tests using (but not limited to) [Gatling](https://gatling.io/).
-5. Support HTTPS.
+5. Support HTTPS communication between the `clients` and the `shards`.
 6. Document the Rest API using [swagger](https://swagger.io/) ([example](https://blog.knoldus.com/swagger-ui-with-akka-http/)).
 7. Avoid lazy construction of `ClientResource` in `ClientRoutes`. Despite its low impact and priority, it is technical debt.
 8. Remove lock in `ShardResource` as it only exists to solve a minor issue that only impacts startup. 
@@ -83,11 +83,11 @@ Positive:
 * Small classes.
 
 Negative:
-* Could have more unit tests. For example: `<X>Config` classes and `<X>Factory` classes.
-* The `LinesManagerFactory` abstraction that accommodates different strategies to manage shards is overkill at this stage.
+* Could have more unit tests. For example: `<X>Config` classes.
 * Lazy construction of `ClientResource` in `ClientRoutes`.
-* Usage of a lock in `ShardResource` in this use-case. It is not required as there are no updates.
-* Code smell in `class ClientRoutesSpec extends BaseSpec with ClientRoutes`
+* Usage of a lock in `ShardResource` in this use-case. It is not required as there are no updates. Issue in the line.
+* Code smell in `class ClientRoutesSpec extends BaseSpec with ClientRoutes`. Investigated alternative but having 
+  internal null-pointer in Akka.
 
 ## External libraries
 

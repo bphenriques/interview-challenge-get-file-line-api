@@ -2,12 +2,10 @@
  *
  *  * © Copyright 2019 Bruno Henriques
  *
- *
  */
 
-package com.salsify.lineserver.client.manager.strategies
+package com.salsify.lineserver.client.manager
 
-import com.salsify.lineserver.client.manager.ShardHttpClientConfig
 import com.typesafe.config.Config
 
 import scala.util.Try
