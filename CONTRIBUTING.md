@@ -37,7 +37,7 @@ the following line:
 client-primary      | 2019-03-24 15:57:13 INFO  c.s.lineserver.client.ClientServer - Server available at 0.0.0.0:8080
 ```
 
-At this stage you may access the client's REST API:
+At this stage the containers should be `healthy`. You may access the client's REST API:
 
 ```bash
 $ curl -I -XGET "localhost:8080/lines/1000"
@@ -57,10 +57,11 @@ The following list summarizes the tasks that would have been explored (ordered) 
 4. Add performance tests using (but not limited to) [Gatling](https://gatling.io/).
 5. Support HTTPS communication between the `clients` and the `shards`.
 6. Document the Rest API using [swagger](https://swagger.io/) ([example](https://blog.knoldus.com/swagger-ui-with-akka-http/)).
-7. Avoid lazy construction of `ClientResource` in `ClientRoutes`. Despite its low impact and priority, it is technical debt.
-8. Remove lock in `ShardResource` as it only exists to solve a minor issue that only impacts startup. 
+7 Fix flaky test due to a scalatest [open issue](https://github.com/scalatest/scalatest/issues/784).
+8. Avoid lazy construction of `ClientResource` in `ClientRoutes`. Despite its low impact and priority, it is technical debt.
+9. Remove lock in `ShardResource` as it only exists to solve a minor issue that only impacts startup. 
    Despite its low impact and priority, it is technical debt.
-9. Investigate how to reduce the docker image size.
+10. Investigate how to reduce the docker image size.
 
 Depending on the performance tests, two additional points would be tackled:
 1. *Iff* communication between `client` and `shards` reveals to be the bottleneck and critical, explore alternative
@@ -72,13 +73,11 @@ Depending on the performance tests, two additional points would be tackled:
 Positive: 
 * Simple system design that allows scaling both vertical and horizontal the system to accommodate either bigger files
   or more clients.
-* Decoupling shards from the client.
 * Capability of launching either a shard or a client from the same application by changing the configuration file.
 * Lines Supplier Abstraction in package `com.salsify.lineserver.client.input`. This allows easily extending the system
-  to support reading large files from an S3 bucket.
+  to support, for example, reading large files from an S3 bucket.
 * Usage of cache in the `client` to avoid expensive network requests to a `shard`.
 * Backpressure queue (see `ShardHttpClient`) to handle spikes.
-* Separation of concerns (through packaging and abstractions)
 * Documentation.
 * Small classes.
 
@@ -86,7 +85,7 @@ Negative:
 * Could have more unit tests. For example: `<X>Config` classes.
 * Lazy construction of `ClientResource` in `ClientRoutes`.
 * Usage of a lock in `ShardResource`.
-* Code smell in `class ClientRoutesSpec extends BaseSpec with ClientRoutes`. 
+* Code smell in `class ClientRoutesSpec extends BaseSpec with ClientRoutes`.
 
 The _code smells_ are identified with either a `FIXME` tag with the accompanied description, author and issue identifier
 so that the issue can be tackled in the future. 
@@ -150,6 +149,7 @@ Scala:
 * [http://www.beyondthelines.net/computing/scala-future-and-execution-context/]
 * [http://www.scalatest.org/]
 * [https://lucianomolinari.com/2016/08/07/testing-future-objects-scalatest/]
+* [http://blog.abhinav.ca/blog/2014/09/08/unit-testing-futures-with-scalatest/]
 
 
 Akka:

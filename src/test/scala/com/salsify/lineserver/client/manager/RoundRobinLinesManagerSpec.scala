@@ -38,12 +38,18 @@ class RoundRobinLinesManagerSpec extends BaseSpec {
       (0, 5, "Line 5"),
     )
 
+    /**
+      * FIXME:
+      *
+      * Flaky test due to a open issue https://github.com/scalatest/scalatest/issues/784. The workaround suggested
+      * leads to compilation error.
+      *
+      * BH-4 | Bruno Henriques (brunoaphenriques@gmail.com)
+      */
     val cluster = new MockRoundRobinLinesManager(2)
     forAll (rows) { (_: Int, lineNumber: Int, line: String) =>
-      whenReady(cluster.setString(lineNumber, line)) { _ =>
-        whenReady(cluster.getString(lineNumber)) { result =>
-          result shouldEqual line
-        }
+      whenReady(cluster.setString(lineNumber, line).flatMap(_ => cluster.getString(lineNumber))) { result =>
+        result shouldEqual line
       }
     }
   }

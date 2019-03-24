@@ -1,7 +1,5 @@
 .PHONY: all clean compile lint test package
 
-all: clean compile lint test docker-build
-
 # Cleans the project.
 clean:
 	sbt clean

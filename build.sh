@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 
-# Runs the makefile all target.
-make all
+# Cleans and builds the docker image.
+make clean docker-build

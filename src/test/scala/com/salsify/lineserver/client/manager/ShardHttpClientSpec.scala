@@ -25,6 +25,14 @@ class ShardHttpClientSpec extends BaseSpec {
       (5, "Value 5"),
     )
 
+    /**
+      * FIXME:
+      *
+      * Flaky test due to a open issue https://github.com/scalatest/scalatest/issues/784. The workaround suggested
+      * leads to compilation error.
+      *
+      * BH-4 | Bruno Henriques (brunoaphenriques@gmail.com)
+      */
     forAll (rows) { (lineNumber: Int, value: String) =>
       val targetShard = newMockShardClient("test", 8080)
       whenReady(targetShard.setString(lineNumber, value) flatMap (_ => targetShard.getString(lineNumber))) { result =>
