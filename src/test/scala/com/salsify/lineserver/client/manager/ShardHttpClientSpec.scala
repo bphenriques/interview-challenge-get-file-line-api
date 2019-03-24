@@ -1,19 +1,11 @@
 package com.salsify.lineserver.client.manager
 
 import com.salsify.helpers.BaseSpec
-import com.salsify.lineserver.client.manager.ShardHttpClient
 
 /**
   * Tests [[ShardHttpClient]].
   */
 class ShardHttpClientSpec extends BaseSpec {
-
-  it must "store the host and the port" in {
-    val host = newMockShardClient("host", 8080)
-
-    host.host shouldEqual "host"
-    host.port shouldEqual 8080
-  }
 
   it must "make available the value as soon as it was set" in {
     val rows = Table(

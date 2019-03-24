@@ -53,7 +53,7 @@ trait Server extends LazyLogging {
   /**
     * The server's routes.
     */
-  protected def routes: Route
+  protected def routes(): Route
 
   /**
     * Perform any necessary operations before starting. Defaults to noop.
@@ -65,7 +65,7 @@ trait Server extends LazyLogging {
     */
   final def start(): Try[Server] = Try {
     logger.info("Starting server...")
-    val binding = setup().flatMap(_ => Http().bindAndHandle(routes, host, port))
+    val binding = setup().flatMap(_ => Http().bindAndHandle(routes(), host, port))
 
     // Add coordinated shutdown that terminates the server gracefully on server shutdown. See notes on the class.
     CoordinatedShutdown(system).addTask(

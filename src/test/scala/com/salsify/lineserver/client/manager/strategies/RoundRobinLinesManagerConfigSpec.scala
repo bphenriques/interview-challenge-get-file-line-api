@@ -1,8 +1,7 @@
 package com.salsify.lineserver.client.manager.strategies
 
 import com.salsify.helpers.BaseSpec
-import com.salsify.lineserver.client.manager.strategies.RoundRobinLinesManagerConfig
-import com.salsify.lineserver.common.config.HostConfig
+import com.salsify.lineserver.client.manager.ShardHttpClientConfig
 
 /**
   * Tests [[RoundRobinLinesManagerConfig]].
@@ -17,8 +16,8 @@ class RoundRobinLinesManagerConfigSpec extends BaseSpec {
 
   it must "accept non-empty set of shards" in {
     val shards = List(
-      HostConfig("localhost", 8080),
-      HostConfig("localhost", 8081),
+      ShardHttpClientConfig("localhost", 8080, 1),
+      ShardHttpClientConfig("localhost", 8081, 1),
     )
 
     val config = RoundRobinLinesManagerConfig(shards)

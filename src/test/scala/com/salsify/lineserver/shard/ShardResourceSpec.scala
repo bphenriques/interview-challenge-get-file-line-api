@@ -8,15 +8,11 @@ import com.salsify.lineserver.shard.exception.KeyNotFoundException
   */
 class ShardResourceSpec extends BaseSpec {
 
-  /**
-    * Variable in test.
-    */
-  val ShardResource = new ShardResource()
-
   it must "reject keys if they were not inserted before" in {
+    val shardResource = new ShardResource()
     val rows = Table("Key", -1, 2, 6)
     forAll (rows) { key: Int =>
-      whenReady(ShardResource.getString(key).failed) { e =>
+      whenReady(shardResource.getString(key).failed) { e =>
         e shouldBe a[KeyNotFoundException]
         e.asInstanceOf[KeyNotFoundException].key shouldEqual key
       }
@@ -33,9 +29,28 @@ class ShardResourceSpec extends BaseSpec {
       ("Line 5", 5)
     )
 
+    val shardResource = new ShardResource()
     forAll (rows) { (value: String, key: Int) =>
-      whenReady(ShardResource.setString(key, value).flatMap(_ => ShardResource.getString(key))) { result =>
+      whenReady(shardResource.setString(key, value).flatMap(_ => shardResource.getString(key))) { result =>
         result shouldEqual value
+      }
+    }
+  }
+
+  it must "successfully keep track of the count" in {
+    val rows = Table(
+      ("Value", "Key"),
+      ("Line 1", 1),
+      ("Line 2", 2),
+      ("Line 3", 3),
+      ("Line 4", 4),
+      ("Line 5", 5)
+    )
+
+    val shardResource = new ShardResource()
+    forAll (rows) { (value: String, key: Int) =>
+      whenReady(shardResource.setString(key, value).flatMap(_ => shardResource.count())) { result =>
+        result shouldEqual key
       }
     }
   }

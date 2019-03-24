@@ -5,7 +5,8 @@ Server that serves a single immutable file  through a Rest API.
 ## How it works?
 
 This system was built to scale both horizontally and vertically. There two main components:
-* The `client` 
+* `client`: 
+* `shard`:
 
 ## How to run
 
@@ -27,8 +28,18 @@ FIXME
  
 Where:
 
+## Scalability
+
+The system is designed to scale both horizontally or vertically:
+* One may scale horizontally in number of shards to accommodate larger files. The number of shards depends on the 
+  available memory in each shard.
+* One may add more clients to the load balancer to accommodate greater number of clients. Moreover, one can tweak the
+  cache to accommodate both business patterns and memory restrictions in order to have balanced cachegreater hit ratio.
 
 
+## External libraries
+
+* 
 
 * How does your system work? (if not addressed in comments in source)
 * How will your system perform with a 1 GB file? a 10 GB file? a 100 GB file?
@@ -38,8 +49,3 @@ Where:
 * How long did you spend on this exercise? If you had unlimited more time to spend on this, how would you spend it and how would you prioritize each item?
 * If you were to critique your code, what would you have to say about it?
 
-
-
-TODO:
-- versioned endpoints
-- Thingy on documenting the endponts and make it available at a specific port

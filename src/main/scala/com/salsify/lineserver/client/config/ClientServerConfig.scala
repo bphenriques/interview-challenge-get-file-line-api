@@ -4,7 +4,7 @@ import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
 import com.salsify.lineserver.client.input.{LinesInputSupplier, LinesInputSupplierFactory}
 import com.salsify.lineserver.client.manager.{LinesManager, LinesManagerFactory}
-import com.salsify.lineserver.common.config.HostConfig
+import com.salsify.lineserver.common.config.ServerBindingConfig
 import com.typesafe.config.Config
 
 import scala.concurrent.ExecutionContext
@@ -18,7 +18,7 @@ import scala.util.Try
   * @param linesManager       The strategy used to manage the lines.
   */
 final case class ClientServerConfig(
-  binding: HostConfig,
+  binding: ServerBindingConfig,
   linesSupplier: Option[LinesInputSupplier],
   linesManager: LinesManager
 )
@@ -44,7 +44,7 @@ object ClientServerConfig {
     system: ActorSystem,
     executionContext: ExecutionContext
   ): Try[ClientServerConfig] = for {
-    httpConfig        <- conf.getConfig("http").read[HostConfig](HostConfig.from)
+    httpConfig        <- conf.getConfig("http").read[ServerBindingConfig](ServerBindingConfig.from)
     linesManager      <- LinesManagerFactory.from(conf.getConfig("manager"))
   } yield ClientServerConfig(
     httpConfig,

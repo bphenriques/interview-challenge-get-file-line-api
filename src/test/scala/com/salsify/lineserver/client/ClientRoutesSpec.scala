@@ -8,7 +8,7 @@ import com.salsify.helpers.BaseSpec
   */
 class ClientRoutesSpec extends BaseSpec with ClientRoutes {
 
-  override val handler: ClientResource = SampleClientResource
+  override def createHandler(): ClientResource = SampleClientResource
 
   it must "return HTTP 200 in healthcheck" in {
     Get("/health") ~> healthRoute() ~> check {

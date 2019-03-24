@@ -5,6 +5,7 @@ services:
     container_name: client-primary
     image: ${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_VERSION}
     ports:
+      # Do not bind to any specific port in the host so that we can connect through the load balancer.
     - 8080
     depends_on:
       - shard1
@@ -21,8 +22,6 @@ services:
   client-secondary:
     container_name: client-secondary
     image: ${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_VERSION}
-    deploy:
-      replicas: 2
     ports:
       # Do not bind to any specific port in the host so that we can connect through the load balancer.
       - 8080
@@ -70,4 +69,4 @@ services:
       - client-primary
       - client-secondary
     ports:
-      - "4000:4000"
+      - "8080:8080"

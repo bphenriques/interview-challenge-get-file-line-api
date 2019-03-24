@@ -1,10 +1,6 @@
 package com.salsify.lineserver.client.manager.strategies
 
 import com.salsify.helpers.{BaseSpec, MockRoundRobinLinesManager}
-import com.salsify.lineserver.client.manager.strategies.RoundRobinLinesManager
-
-import scala.concurrent.Await
-import scala.concurrent.duration._
 
 /**
   * Tests [[RoundRobinLinesManager]].
@@ -26,19 +22,6 @@ class RoundRobinLinesManagerSpec extends BaseSpec {
     }
   }
 
-  it must "return the same shard if provided a single shard" in {
-    val cluster = new MockRoundRobinLinesManager(1)
-    cluster.shardFor(1) shouldEqual cluster.shardFor(2)
-  }
-
-  it must "use round-robin to select the shard given a line number" in {
-    val cluster = new MockRoundRobinLinesManager(2)
-
-    cluster.shardFor(1) shouldEqual cluster.shards(1)
-    cluster.shardFor(2) shouldEqual cluster.shards(0)
-    cluster.shardFor(3) shouldEqual cluster.shards(1) // line number > number of shards
-  }
-
   it must "make available the line at the shard where it was set" in {
     val rows = Table(
       ("Shard", "Line Number", "Line"),
@@ -58,20 +41,24 @@ class RoundRobinLinesManagerSpec extends BaseSpec {
     }
   }
 
-  it must "setup correctly, i.e., distribute all the lines throughout the shards in the cluster" in {
+  it must "return the correct count" in {
     val rows = Table(
-      ("Line", "Line Number"),
-      ("Line 1", 1),
-      ("Line 2", 2),
-      ("Line 3", 3),
-      ("Line 4", 4),
-      ("Line 5", 5)
+      ("Shard", "Line Number", "Line"),
+      (0, 1, "Line 1"),
+      (1, 2, "Line 2"),
+      (0, 3, "Line 3"),
+      (1, 4, "Line 4"),
+      (0, 5, "Line 5"),
     )
 
     val cluster = new MockRoundRobinLinesManager(2)
-    Await.result(cluster.setup(SampleLinesProvider), 5 second)
-    forAll (rows) { (line: String, lineNumber: Int) =>
-      whenReady(cluster.getString(lineNumber)) { result =>
+    whenReady(cluster.count()) { count =>
+      count shouldEqual 0
+    }
+
+    forAll (rows) { (shard: Int, lineNumber: Int, line: String) =>
+      val targetShard = cluster.shards(shard)
+      whenReady(targetShard.setString(lineNumber, line) flatMap (_ => targetShard.getString(lineNumber))) { result =>
         result shouldEqual line
       }
     }

@@ -8,7 +8,7 @@ package com.salsify.lineserver.common.exception
   * Generic Line Server exception.
   *
   * @param message    The message.
-  * @param error      The error.
+  * @param error      Optional error.
   */
 class LineServerException(
   message: String,

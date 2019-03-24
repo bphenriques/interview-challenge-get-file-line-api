@@ -1,6 +1,6 @@
 package com.salsify.lineserver.shard.config
 
-import com.salsify.lineserver.common.config.HostConfig
+import com.salsify.lineserver.common.config.ServerBindingConfig
 import com.typesafe.config.Config
 
 import scala.util.Try
@@ -10,7 +10,7 @@ import scala.util.Try
   *
   * @param binding The binding configuration.
   */
-final case class ShardServerConfig(binding: HostConfig)
+final case class ShardServerConfig(binding: ServerBindingConfig)
 
 /**
   * Companion class of [[ShardServerConfig]].
@@ -26,6 +26,6 @@ object ShardServerConfig {
     * @return An instance of [[ShardServerConfig]].
     */
   def from(conf: Config): Try[ShardServerConfig] = for {
-    binding        <- conf.getConfig("http").read[HostConfig](HostConfig.from)
+    binding        <- conf.getConfig("http").read[ServerBindingConfig](ServerBindingConfig.from)
   } yield ShardServerConfig(binding)
 }

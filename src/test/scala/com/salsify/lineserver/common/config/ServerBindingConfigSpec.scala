@@ -3,9 +3,9 @@ package com.salsify.lineserver.common.config
 import com.salsify.helpers.BaseSpec
 
 /**
-  * Tests for [[HostConfig]].
+  * Tests for [[ServerBindingConfig]].
   */
-class HostConfigSpec extends BaseSpec {
+class ServerBindingConfigSpec extends BaseSpec {
 
   it must "reject invalid arguments" in {
     val rows = Table(
@@ -18,7 +18,7 @@ class HostConfigSpec extends BaseSpec {
 
     forAll (rows) { (host: String, port: Int) =>
       assertThrows[Exception] {
-        HostConfig(host, port)
+        ServerBindingConfig(host, port)
       }
     }
   }
@@ -33,7 +33,7 @@ class HostConfigSpec extends BaseSpec {
     )
 
     forAll (rows) { (host: String, port: Int) =>
-      val config = HostConfig(host, port)
+      val config = ServerBindingConfig(host, port)
 
       config.host shouldEqual host
       config.port shouldEqual port

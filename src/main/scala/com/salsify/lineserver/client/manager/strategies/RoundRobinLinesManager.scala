@@ -3,6 +3,7 @@ package com.salsify.lineserver.client.manager.strategies
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
 import com.salsify.lineserver.client.manager.{LinesManager, ShardHttpClient}
+import com.salsify.lineserver.shard.Shard
 import com.typesafe.scalalogging.LazyLogging
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -26,7 +27,7 @@ class RoundRobinLinesManager(config: RoundRobinLinesManagerConfig)(
   /**
     * The set of shards.
     */
-  private val shards: Seq[ShardHttpClient] = config.shards.map(config => new ShardHttpClient(config))
+  private val shards: Seq[Shard] = config.shards.map(config => new ShardHttpClient(config))
 
   /**
     * Returns the shard assigned to the line number provided as argument.
@@ -34,7 +35,7 @@ class RoundRobinLinesManager(config: RoundRobinLinesManagerConfig)(
     * @param lineNumber The line number.
     * @return The shard.
     */
-  private def shardFor(lineNumber: Int): ShardHttpClient = {
+  private def shardFor(lineNumber: Int): Shard = {
     assert(lineNumber > 0, "The line number > 0 invariant")
     shards(lineNumber % shards.length)
   }

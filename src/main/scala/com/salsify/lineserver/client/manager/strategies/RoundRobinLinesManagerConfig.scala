@@ -1,6 +1,6 @@
 package com.salsify.lineserver.client.manager.strategies
 
-import com.salsify.lineserver.common.config.HostConfig
+import com.salsify.lineserver.client.manager.ShardHttpClientConfig
 import com.typesafe.config.Config
 
 import scala.util.Try
@@ -10,7 +10,7 @@ import scala.util.Try
   *
   * @param shards                   The shard locations.
   */
-final case class RoundRobinLinesManagerConfig(shards: List[HostConfig]) {
+final case class RoundRobinLinesManagerConfig(shards: List[ShardHttpClientConfig]) {
   require(shards.nonEmpty, "The shards must be a non-empty list.")
 }
 
@@ -20,6 +20,7 @@ final case class RoundRobinLinesManagerConfig(shards: List[HostConfig]) {
 object RoundRobinLinesManagerConfig {
 
   import com.salsify.lineserver.common.enrichers.ConfigEnricher._
+
   import scala.collection.JavaConverters._
 
   /**
@@ -29,6 +30,6 @@ object RoundRobinLinesManagerConfig {
     * @return An instance of [[RoundRobinLinesManagerConfig]].
     */
   def from(conf: Config): Try[RoundRobinLinesManagerConfig] = for {
-    shards               <- Try(conf.getConfigList("shards").asScala.map(_.read[HostConfig](HostConfig.from).get).toList)
+    shards <- Try(conf.getConfigList("shards").asScala.map(_.read[ShardHttpClientConfig](ShardHttpClientConfig.from).get).toList)
   } yield RoundRobinLinesManagerConfig(shards)
 }

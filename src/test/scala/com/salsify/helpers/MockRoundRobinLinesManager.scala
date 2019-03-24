@@ -2,10 +2,8 @@ package com.salsify.helpers
 
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
-import com.salsify.lineserver.client.manager.strategies.RoundRobinLinesManagerConfig
-import com.salsify.lineserver.client.input.LinesInputSupplier
-import com.salsify.lineserver.client.manager.strategies.{RoundRobinLinesManagerConfig, RoundRobinLinesManager}
-import com.salsify.lineserver.common.config.HostConfig
+import com.salsify.lineserver.client.manager.LinesManager
+import com.salsify.lineserver.shard.Shard
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -18,30 +16,32 @@ import scala.concurrent.{ExecutionContext, Future}
   * @param executionContext (implicit) The execution context.
   */
 class MockRoundRobinLinesManager(numberOfShards: Int)(
-  override implicit val materializer: ActorMaterializer,
-  override implicit val system: ActorSystem,
-  override implicit val executionContext: ExecutionContext
-) extends RoundRobinLinesManager(
-  RoundRobinLinesManagerConfig(List(HostConfig("placeholder", 8080)))
-) {
+  implicit val materializer: ActorMaterializer,
+  implicit val system: ActorSystem,
+  implicit val executionContext: ExecutionContext
+) extends LinesManager {
   require(numberOfShards > 0)
+
+  /**
+    * Returns the shard assigned to the line number provided as argument.
+    *
+    * @param lineNumber The line number.
+    * @return The shard.
+    */
+  private def shardFor(lineNumber: Int): Shard = {
+    assert(lineNumber > 0, "The line number > 0 invariant")
+    shards(lineNumber % shards.length)
+  }
 
   /**
     * Creates an in-memory sequence of mocked shard clients.
     */
-  override val shards: Seq[MockShardHttpClient] =
-    (1 to numberOfShards)
-      .map(index => new MockShardHttpClient(s"shard-$index", 8080))
+  val shards: Seq[Shard] =
+    (1 to numberOfShards).map(index => new MockShardHttpClient(s"shard-$index", 8080))
 
-  /**
-    * Reads the file and delegates file distribution to super.
-    *
-    * @param lineSupplier The line supplier.
-    * @return The future when the setup has completed.
-    */
-  override def setup(lineSupplier: LinesInputSupplier): Future[Unit] = Future {
-    lineSupplier.getLines().foreach { line =>
-      setString(line.index, line.content)
-    }
-  }
+  override def getString(key: Int): Future[String] = shardFor(key).getString(key)
+
+  override def setString(key: Int, value: String): Future[Unit] = shardFor(key).setString(key, value)
+
+  override def count(): Future[Int] = Future.sequence(shards.map(_.count())).map(counts => counts.sum)
 }

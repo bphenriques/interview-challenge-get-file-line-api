@@ -2,14 +2,12 @@ package com.salsify.helpers
 
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
-import com.salsify.lineserver.client.manager.ShardHttpClient
-import com.salsify.lineserver.common.config.HostConfig
-import com.salsify.lineserver.shard.ShardResource
+import com.salsify.lineserver.shard.{Shard, ShardResource}
 
 import scala.concurrent.{ExecutionContext, Future}
 
 /**
-  * Mocks a HTTP client by using an in-memory [[ShardResource]] that is identical type used by the Shard's rest API.
+  * Mocks a HTTP client by using an in-memory [[ShardResource]] that is identical type used by the Shard's server.
   *
   * @param host             The host.
   * @param port             The port.
@@ -18,10 +16,10 @@ import scala.concurrent.{ExecutionContext, Future}
   * @param executionContext (implicit) The execution context.
   */
 class MockShardHttpClient(host: String, port: Int)(
-  override implicit val materializer: ActorMaterializer,
-  override implicit val system: ActorSystem,
-  override implicit val executionContext: ExecutionContext
-) extends ShardHttpClient(HostConfig(host, port))(materializer, system, executionContext) {
+  implicit val materializer: ActorMaterializer,
+  implicit val system: ActorSystem,
+  implicit val executionContext: ExecutionContext
+) extends Shard {
 
   /**
     * The shard's route handler.
@@ -31,4 +29,6 @@ class MockShardHttpClient(host: String, port: Int)(
   override def getString(key: Int): Future[String] = resource.getString(key)
 
   override def setString(key: Int, value: String): Future[Unit] = resource.setString(key, value)
+
+  override def count(): Future[Int] = resource.count()
 }

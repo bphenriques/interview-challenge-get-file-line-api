@@ -10,11 +10,13 @@ import akka.http.scaladsl.testkit.ScalatestRouteTest
 import com.salsify.lineserver.client.ClientResource
 import com.salsify.lineserver.client.input.strategies.{LocalFileLinesInputSupplier, LocalFileLinesInputSupplierConfig}
 import com.salsify.lineserver.client.manager.ShardHttpClient
+import com.salsify.lineserver.shard.Shard
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.prop.TableDrivenPropertyChecks
 import org.scalatest.{FlatSpec, Matchers}
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.duration.Duration
+import scala.concurrent.{Await, ExecutionContext, Future}
 
 /**
   * Provides boiler plate code to streamline unit tests.
@@ -36,39 +38,20 @@ class BaseSpec extends FlatSpec with Matchers with TableDrivenPropertyChecks wit
     */
   val SampleCluster: MockRoundRobinLinesManager = {
     val cluster = new MockRoundRobinLinesManager(3)
-    cluster.setup(SampleLinesProvider)
+    val insert = SampleLinesProvider.getLines().map(l => cluster.setString(l.index, l.content))
+    Await.result(Future.sequence(insert), Duration.Inf)
     cluster
   }
 
   /**
     * Routes resource that serves the sample file.
     */
-  val SampleClientResource = new ClientResource(
-    SampleLinesProvider,
-    SampleCluster
-  )
-
-  /**
-    * Lines Provider given a empty file.
-    */
-  val EmptyLinesProvider = LocalFileLinesInputSupplier(LocalFileLinesInputSupplierConfig(getResource("empty.txt")))
-
-  /**
-    * Cluster that serves the empty file.
-    */
-  val EmptyCluster: MockRoundRobinLinesManager = {
-    val cluster = new MockRoundRobinLinesManager(3)
-    cluster.setup(EmptyLinesProvider)
-    cluster
-  }
+  val SampleClientResource = new ClientResource(SampleCluster)
 
   /**
     * Routes resource that serves the empty file.
     */
-  val EmptyClientResource = new ClientResource(
-    EmptyLinesProvider,
-    EmptyCluster
-  )
+  val EmptyClientResource = new ClientResource(new MockRoundRobinLinesManager(3))
 
   /**
     * Gets a resource file.
@@ -85,5 +68,5 @@ class BaseSpec extends FlatSpec with Matchers with TableDrivenPropertyChecks wit
     * @param port The port.
     * @return An instance of [[ShardHttpClient]].
     */
-  def newMockShardClient(host: String, port: Int = 8080): ShardHttpClient = new MockShardHttpClient(host, port)
+  def newMockShardClient(host: String, port: Int = 8080): Shard = new MockShardHttpClient(host, port)
 }

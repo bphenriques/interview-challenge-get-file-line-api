@@ -19,7 +19,7 @@ trait ClientRoutes extends Directives with LazyLogging {
   /**
     * The routes handler.
     */
-  val handler: ClientResource = createHandler()
+  lazy val handler: ClientResource = createHandler()
 
   /**
     * The Akka actor system.
