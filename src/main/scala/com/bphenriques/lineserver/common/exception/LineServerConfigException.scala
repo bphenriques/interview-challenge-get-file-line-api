@@ -6,8 +6,7 @@
 
 package com.bphenriques.lineserver.common.exception
 
-/**
-  * Line Server configuration exception.
+/** Line Server configuration exception.
   *
   * @param message    The message.
   */

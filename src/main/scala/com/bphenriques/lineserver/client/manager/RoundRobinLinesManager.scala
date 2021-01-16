@@ -13,8 +13,7 @@ import com.typesafe.scalalogging.LazyLogging
 
 import scala.concurrent.{ExecutionContext, Future}
 
-/**
-  * Distributes lines evenly across a cluster of known shards.
+/** Distributes lines evenly across a cluster of known shards.
   * <p>
   * Invariant: The number of shards is always greater than 0.
   *
@@ -27,15 +26,14 @@ class RoundRobinLinesManager(config: RoundRobinLinesManagerConfig)(
   implicit val materializer: ActorMaterializer,
   implicit val system: ActorSystem,
   implicit val executionContext: ExecutionContext
-) extends LinesManager with LazyLogging {
+) extends LinesManager
+    with LazyLogging {
 
-  /**
-    * The set of shards.
+  /** The set of shards.
     */
   private val shards: Seq[Shard] = config.shards.map(config => new ShardHttpClient(config))
 
-  /**
-    * Returns the shard assigned to the line number provided as argument.
+  /** Returns the shard assigned to the line number provided as argument.
     *
     * @param lineNumber The line number.
     * @return The shard.
@@ -45,22 +43,19 @@ class RoundRobinLinesManager(config: RoundRobinLinesManagerConfig)(
     shards(lineNumber % shards.length)
   }
 
-  /**
-    * @inheritdoc
+  /** @inheritdoc
     *
     * Obtains the shard assigned to that line and gets the value.
     */
   override def getString(key: Int): Future[String] = shardFor(key).getString(key)
 
-  /**
-    * @inheritdoc
+  /** @inheritdoc
     *
     * Obtains the shard assigned to that line and sets the value. Moreover, it is idempotent.
     */
   override def setString(key: Int, value: String): Future[Unit] = shardFor(key).setString(key, value)
 
-  /**
-    * @inheritdoc
+  /** @inheritdoc
     */
   override def count(): Future[Int] = Future.sequence(shards.map(_.count())).map(counts => counts.sum)
 

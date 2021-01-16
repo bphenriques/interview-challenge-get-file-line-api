@@ -16,20 +16,17 @@ import com.typesafe.config.Config
 import scala.concurrent.ExecutionContext
 import scala.util.Try
 
-/**
-  * The Application's configuration.
+/** The Application's configuration.
   *
   * @param server The server.
   */
 final case class AppConfig(server: Server)
 
-/**
-  * Companion class of [[AppConfig]].
+/** Companion class of [[AppConfig]].
   */
 object AppConfig {
 
-  /**
-    * Creates an instance of [[AppConfig]].
+  /** Creates an instance of [[AppConfig]].
     *
     * @param conf             The configuration.
     * @param materializer     (implicit) The Akka actor materializer.
@@ -37,11 +34,10 @@ object AppConfig {
     * @param executionContext (implicit) The execution context.
     * @return An instance of [[AppConfig]].
     */
-  def from(conf: Config)(implicit
-    materializer: ActorMaterializer,
-    system: ActorSystem,
-    executionContext: ExecutionContext
-  ): Try[AppConfig] = for {
-    server <- ServerFactory.from(conf)
-  } yield config.AppConfig(server)
+  def from(
+    conf: Config
+  )(implicit materializer: ActorMaterializer, system: ActorSystem, executionContext: ExecutionContext): Try[AppConfig] =
+    for {
+      server <- ServerFactory.from(conf)
+    } yield config.AppConfig(server)
 }

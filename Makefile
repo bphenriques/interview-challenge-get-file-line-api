@@ -10,7 +10,13 @@ compile:
 
 # Runs Scala linter.
 lint:
-	sbt scalastyle
+	sbt scalafmtSbt
+
+# Formats source files according to the Scala linter.
+# Skips sbt files because the whitespace matters specifically in the Dependencies file.
+lintFormat:
+	sbt scalafmt
+
 
 # Unit tests.
 test:

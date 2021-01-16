@@ -10,13 +10,11 @@ import com.bphenriques.lineserver.client.exception.LineNotFoundException
 
 import scala.concurrent.Future
 
-/**
-  * The client's API.
+/** The client's API.
   */
 trait Client {
 
-  /**
-    * Returns the content of line at `lineNumber`. It fails if the requested line is beyond the end of the file.
+  /** Returns the content of line at `lineNumber`. It fails if the requested line is beyond the end of the file.
     *
     * @param lineNumber The line number.
     * @return The content of the line.

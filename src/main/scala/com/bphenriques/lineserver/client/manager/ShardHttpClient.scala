@@ -19,8 +19,7 @@ import com.typesafe.scalalogging.LazyLogging
 import scala.concurrent.{ExecutionContext, Future, Promise}
 import scala.util.{Failure, Success}
 
-/**
-  * Shard Http client.
+/** Shard Http client.
   *
   * @param config           The configuration.
   * @param materializer     (implicit) The Akka actor materializer.
@@ -31,43 +30,37 @@ class ShardHttpClient(config: ShardHttpClientConfig)(
   implicit val materializer: ActorMaterializer,
   implicit val system: ActorSystem,
   implicit val executionContext: ExecutionContext
-) extends Shard with LazyLogging {
+) extends Shard
+    with LazyLogging {
 
-  /**
-    * Shard's host.
+  /** Shard's host.
     */
   val host: String = config.host
 
-  /**
-    * Shards port.
+  /** Shards port.
     */
   val port: Int = config.port
 
-  /**
-    * The connection pool to handle requests
+  /** The connection pool to handle requests
     */
   private val connectionPool = Http().cachedHostConnectionPool[Promise[HttpResponse]](host.replace("http://", ""), port)
 
-  /**
-    * The size of internal queue to handle spikes.
+  /** The size of internal queue to handle spikes.
     */
   private val QueueSize = config.queueSize
 
-  /**
-    * The connection queue using backpressure as the overflow strategy.
+  /** The connection queue using backpressure as the overflow strategy.
     */
   private val connectionQueue = Source
     .queue[(HttpRequest, Promise[HttpResponse])](QueueSize, OverflowStrategy.backpressure)
     .via(connectionPool)
-    .toMat(
-      Sink.foreach {
-        case (Success(response), promise) => promise.success(response)
-        case (Failure(e), promise)        => promise.failure(ShardHttpClientException(this, s"Error when executing request.", e))
-      })(Keep.left)
+    .toMat(Sink.foreach {
+      case (Success(response), promise) => promise.success(response)
+      case (Failure(e), promise)        => promise.failure(ShardHttpClientException(this, s"Error when executing request.", e))
+    })(Keep.left)
     .run()
 
-  /**
-    * Adds request to the queue.
+  /** Adds request to the queue.
     *
     * @param request The HTTP request.
     * @return The future with the response.
@@ -75,15 +68,16 @@ class ShardHttpClient(config: ShardHttpClientConfig)(
   private def enqueueRequest(request: HttpRequest): Future[HttpResponse] = {
     val promise = Promise[HttpResponse]
     connectionQueue.offer(request -> promise).flatMap {
-      case QueueOfferResult.Enqueued    => promise.future
-      case QueueOfferResult.Dropped     => throw ShardHttpClientException(this, s"Offer dropped when executing request $request.")
-      case QueueOfferResult.Failure(ex) => throw ShardHttpClientException(this, s"Offer Failure when executing request $request.", ex)
+      case QueueOfferResult.Enqueued => promise.future
+      case QueueOfferResult.Dropped =>
+        throw ShardHttpClientException(this, s"Offer dropped when executing request $request.")
+      case QueueOfferResult.Failure(ex) =>
+        throw ShardHttpClientException(this, s"Offer Failure when executing request $request.", ex)
       case QueueOfferResult.QueueClosed => throw ShardHttpClientException(this, s"Queue closed on $request.")
     }
   }
 
-  /**
-    * @inheritdoc
+  /** @inheritdoc
     *
     * Fetches the value from the remote server using the Shard's REST Api.
     * <p>
@@ -96,10 +90,10 @@ class ShardHttpClient(config: ShardHttpClientConfig)(
           case StatusCodes.OK => response
           case code           => throw ShardHttpClientException(this, s"Unexpected HTTP $code in getString($key).")
         }
-      }.flatMap(response => Unmarshal(response).to[String])
+      }
+      .flatMap(response => Unmarshal(response).to[String])
 
-  /**
-    * @inheritdoc
+  /** @inheritdoc
     *
     * Sets the value using the Shard's REST Api.
     * <p>
@@ -114,8 +108,7 @@ class ShardHttpClient(config: ShardHttpClientConfig)(
         }
       }
 
-  /**
-    * @inheritdoc
+  /** @inheritdoc
     */
   override def count(): Future[Int] =
     enqueueRequest(HttpRequest(uri = s"$host:$port/count"))

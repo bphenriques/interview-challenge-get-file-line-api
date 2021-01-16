@@ -4,6 +4,7 @@ Some thoughts in 2021 and I may address because I had fun in this project:
 - Organize a bit the project to have the project structure reflect a bit the deployment structure.
 - Review tests.
 - Review some parts now that I know a bit more about Akka.
+- Today I frown upon the way the Docker image is being built as I seem to lose control. I might revisit.
 
 ---
 # Specification

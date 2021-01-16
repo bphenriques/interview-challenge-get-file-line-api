@@ -13,8 +13,7 @@ import com.typesafe.scalalogging.LazyLogging
 import scala.concurrent.{Await, Future}
 import scala.concurrent.duration._
 
-/**
-  * Handles [[ClientRoutes]].
+/** Handles [[ClientRoutes]].
   * <p>
   * It firstly obtains the number of available lines. This request timeouts after 30 seconds,
   * failing the server as consequence.
@@ -23,8 +22,7 @@ import scala.concurrent.duration._
   */
 final class ClientResource(linesManager: LinesManager) extends Client with LazyLogging {
 
-  /**
-    * Stores the number of available lines. It is lazy b/c the secondary server does not know the number of lines.
+  /** Stores the number of available lines. It is lazy b/c the secondary server does not know the number of lines.
     */
   private val numberOfAvailableLines = {
     val result = Await.result(linesManager.count(), 30.seconds)

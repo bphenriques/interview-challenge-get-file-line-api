@@ -10,8 +10,7 @@ import com.typesafe.config.Config
 
 import scala.util.Try
 
-/**
-  * Configuration of [[RoundRobinLinesManager]].
+/** Configuration of [[RoundRobinLinesManager]].
   *
   * @param shards                   The shard locations.
   */
@@ -19,8 +18,7 @@ final case class RoundRobinLinesManagerConfig(shards: List[ShardHttpClientConfig
   require(shards.nonEmpty, "The shards must be a non-empty list.")
 }
 
-/**
-  * Companion class of [[RoundRobinLinesManagerConfig]]
+/** Companion class of [[RoundRobinLinesManagerConfig]]
   */
 object RoundRobinLinesManagerConfig {
 
@@ -28,13 +26,14 @@ object RoundRobinLinesManagerConfig {
 
   import scala.collection.JavaConverters._
 
-  /**
-    * Creates an instance of [[RoundRobinLinesManagerConfig]].
+  /** Creates an instance of [[RoundRobinLinesManagerConfig]].
     *
     * @param conf The configuration.
     * @return An instance of [[RoundRobinLinesManagerConfig]].
     */
   def from(conf: Config): Try[RoundRobinLinesManagerConfig] = for {
-    shards <- Try(conf.getConfigList("shards").asScala.map(_.read[ShardHttpClientConfig](ShardHttpClientConfig.from).get).toList)
+    shards <- Try(
+      conf.getConfigList("shards").asScala.map(_.read[ShardHttpClientConfig](ShardHttpClientConfig.from).get).toList
+    )
   } yield RoundRobinLinesManagerConfig(shards)
 }

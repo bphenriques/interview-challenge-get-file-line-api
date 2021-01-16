@@ -15,8 +15,7 @@ import com.bphenriques.lineserver.common.server.Server
 
 import scala.concurrent.{ExecutionContext, Future}
 
-/**
-  * Creates a Client server.
+/** Creates a Client server.
   *
   * @param config             The configuration.
   * @param materializer       (implicit) The Akka actor materializer.
@@ -35,8 +34,7 @@ final class ClientServer(config: ClientServerConfig)(
 
   override protected def routesProvider(): RoutesProvider = new ClientRoutes(config.linesManager)
 
-  /**
-    * @inheritdoc
+  /** @inheritdoc
     *
     * If the lines supplier is not provided, then it is a secondary client, therefore no setup is required.
     */
@@ -48,13 +46,16 @@ final class ClientServer(config: ClientServerConfig)(
 
         // Atomic counter to have a consistent progress counter.
         val processedLines: AtomicReference[Int] = new AtomicReference[Int](0)
-        val linesUpload: Seq[Future[Unit]] = linesSupplier.getLines()
-          .map {
-            line => config.linesManager.setString(line.index, line.content)
+        val linesUpload: Seq[Future[Unit]] = linesSupplier
+          .getLines()
+          .map { line =>
+            config.linesManager
+              .setString(line.index, line.content)
               .map(_ => reportResult(numberOfLines, processedLines.updateAndGet(current => current + 1)))
           }
 
-        Future.sequence(linesUpload)
+        Future
+          .sequence(linesUpload)
           .map { _ =>
             logger.info(s"Processed ${processedLines.get()} lines. Server is now ready to start.")
           }
@@ -64,8 +65,7 @@ final class ClientServer(config: ClientServerConfig)(
     }
   }
 
-  /**
-    * Reports progress of file upload.
+  /** Reports progress of file upload.
     *
     * @param numberOfLines            Total number of lines.
     * @param currentNumProcessedLines The current number of processed lines.

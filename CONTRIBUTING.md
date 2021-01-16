@@ -4,8 +4,9 @@ This project is developed in Scala and [scala-sbt](https://www.scala-sbt.org/) a
 
 ### Requirements
 
-* Sbt 1.2.x.
-* Scala 2.12.8.
+* Java 11
+* Sbt 1.4.5.
+* Scala 2.13.4.
 * Docker
 
 ### Development Guide
@@ -22,6 +23,11 @@ $ make docker-build
 
 This builds and installs the following Docker images in your local Docker registry: `lineserver:latest` and 
 `lineserver:0.1.0-SNAPSHOT`.
+
+If you are having troubles running due to a "packages cannot be represented as URI it is due to version of Java set. For some reason the sbt does not respect $JAVA_HOME therefore follows an alternative:
+```
+sbt  sbt -java-home /Library/Java/JavaVirtualMachines/adoptopenjdk-11.jdk/Contents/Home docker:publishLocal 
+``` 
 
 To run the project execute the following command in the root of the project:
 ```
@@ -41,6 +47,14 @@ $ curl -I -XGET "localhost:8080/lines/1000"
 
 *Note*: You will find more targets in the `Makefile` that these scripts rely on. Each target is contextually commented
 in the file.
+
+## Troubleshooting
+
+If you are having troubles running due to a "packages cannot be represented as URI it is due to version of Java set. For some reason the sbt does not respect $JAVA_HOME therefore follows an alternative:
+
+```
+sbt -java-home /Library/Java/JavaVirtualMachines/adoptopenjdk-11.jdk/Contents/Home <target> 
+``` 
 
 #### Future work
 

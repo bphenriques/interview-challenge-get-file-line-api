@@ -12,13 +12,11 @@ import com.bphenriques.lineserver.shard.Shard
 
 import scala.concurrent.Future
 
-/**
-  * Interface to manage shards. This interface is similar to [[Shard]].
+/** Interface to manage shards. This interface is similar to [[Shard]].
   */
 trait LinesManager {
 
-  /**
-    * Gets the stored String value given key.
+  /** Gets the stored String value given key.
     *
     * @param key The key.
     * @return The future that will execute the operation and return the String.
@@ -26,8 +24,7 @@ trait LinesManager {
     */
   def getString(key: Int): Future[String]
 
-  /**
-    * Inserts a key-value pair.
+  /** Inserts a key-value pair.
     *
     * @param key The key.
     * @param value The value.
@@ -35,8 +32,7 @@ trait LinesManager {
     */
   def setString(key: Int, value: String): Future[Unit]
 
-  /**
-    * The number of available lines. This allows new clients to join and know the number of lines available without
+  /** The number of available lines. This allows new clients to join and know the number of lines available without
     * knowing anything about the source file.
     *
     * @return The number of available lines.

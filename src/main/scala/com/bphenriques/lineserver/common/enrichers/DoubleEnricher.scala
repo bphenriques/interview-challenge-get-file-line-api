@@ -6,14 +6,12 @@
 
 package com.bphenriques.lineserver.common.enrichers
 
-/**
-  * Extension of [[Double]].
+/** Extension of [[Double]].
   */
 object DoubleEnricher {
   implicit class RichConfig(x: Double) {
 
-    /**
-      * Determines if `this` is more or less equal to `y` given the precision provided.
+    /** Determines if `this` is more or less equal to `y` given the precision provided.
       *
       * @param y         The other value.
       * @param precision The precision. Defaults to 0.05.

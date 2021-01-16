@@ -8,13 +8,11 @@ package com.bphenriques.lineserver.common.server
 
 import akka.http.scaladsl.server.Route
 
-/**
-  * Provides a routes
+/** Provides a routes
   */
 trait RoutesProvider {
 
-  /**
-    * The routes.
+  /** The routes.
     *
     * @return The routes.
     */

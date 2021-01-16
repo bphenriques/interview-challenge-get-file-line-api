@@ -2,7 +2,7 @@ import Dependencies._
 import com.typesafe.sbt.packager.archetypes.scripts.BashStartScriptPlugin.autoImport.bashScriptExtraDefines
 import sbt.Keys.libraryDependencies
 
-ThisBuild / scalaVersion     := "2.12.8"
+ThisBuild / scalaVersion     := "2.13.4"
 ThisBuild / organization     := "com.bphenriques"
 ThisBuild / name             := "lineserver"
 ThisBuild / version          := "0.1.0-SNAPSHOT"
@@ -64,7 +64,7 @@ lazy val packagingSettings = Seq(
 )
 
 // Change docker image. See https://www.scala-sbt.org/sbt-native-packager/formats/docker.html for more information.
-dockerBaseImage := "openjdk:8-jre"
+dockerBaseImage := "adoptopenjdk/openjdk11:debian-slim"
 dockerExposedPorts := Seq(8080)
 dockerUpdateLatest := true
 

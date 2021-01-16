@@ -10,8 +10,7 @@ import com.typesafe.config.Config
 
 import scala.util.Try
 
-/**
-  * Configuration of a shard client.
+/** Configuration of a shard client.
   *
   * @param host       A HTTP host that starts with http://.
   * @param port       A port between 1023 and 65535
@@ -25,20 +24,18 @@ final case class ShardHttpClientConfig(host: String, port: Int, queueSize: Int) 
   require(queueSize > 0, "The requests queue should be greater or equal to zero")
 }
 
-/**
-  * Companion object of [[ShardHttpClientConfig]].
+/** Companion object of [[ShardHttpClientConfig]].
   */
 object ShardHttpClientConfig {
 
-  /**
-    * Creates an instance of [[ShardHttpClientConfig]].
+  /** Creates an instance of [[ShardHttpClientConfig]].
     *
     * @param conf The config.
     * @return An instance of [[ShardHttpClientConfig]].
     */
   def from(conf: Config): Try[ShardHttpClientConfig] = for {
-    host      <- Try(conf.getString("host"))
-    port      <- Try(conf.getInt("port"))
+    host <- Try(conf.getString("host"))
+    port <- Try(conf.getInt("port"))
     queueSize <- Try(conf.getInt("requests-queue-size"))
   } yield ShardHttpClientConfig(host, port, queueSize)
 }

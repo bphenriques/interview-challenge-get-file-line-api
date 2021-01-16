@@ -18,15 +18,13 @@ import com.typesafe.config.Config
 import scala.concurrent.ExecutionContext
 import scala.util.Try
 
-/**
-  * Factory of [[Server]].
+/** Factory of [[Server]].
   */
 object ServerFactory {
 
   import com.bphenriques.lineserver.common.enrichers.ConfigEnricher._
 
-  /**
-    * Creates an instance of [[Server]] given a [[Config]].
+  /** Creates an instance of [[Server]] given a [[Config]].
     *
     * @param conf             The configuration.
     * @param materializer     (implicit) The Akka actor materializer.
@@ -34,23 +32,26 @@ object ServerFactory {
     * @param executionContext (implicit) The execution context.
     * @return An instance of [[Server]].
     */
-  def from(conf: Config)(implicit
-    materializer: ActorMaterializer,
-    system: ActorSystem,
-    executionContext: ExecutionContext
-  ): Try[Server] = Try {
-    conf.getString("type") match {
-      case "client" => conf.getConfig("client")
-        .read[ClientServerConfig](ClientServerConfig.from)
-        .map(c => new ClientServer(c))
-        .get
+  def from(
+    conf: Config
+  )(implicit materializer: ActorMaterializer, system: ActorSystem, executionContext: ExecutionContext): Try[Server] =
+    Try {
+      conf.getString("type") match {
+        case "client" =>
+          conf
+            .getConfig("client")
+            .read[ClientServerConfig](ClientServerConfig.from)
+            .map(c => new ClientServer(c))
+            .get
 
-      case "shard" => conf.getConfig("shard")
-        .read[ShardServerConfig](ShardServerConfig.from)
-        .map(c => new ShardServer(c))
-        .get
+        case "shard" =>
+          conf
+            .getConfig("shard")
+            .read[ShardServerConfig](ShardServerConfig.from)
+            .map(c => new ShardServer(c))
+            .get
 
-      case server => throw LineServerConfigException(s"Unrecognized server type: '$server'")
+        case server => throw LineServerConfigException(s"Unrecognized server type: '$server'")
+      }
     }
-  }
 }

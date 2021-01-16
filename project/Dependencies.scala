@@ -1,7 +1,7 @@
 /*
  *
  *  * © Copyright 2019 Bruno Henriques
- *  
+ *
  *
  */
 
@@ -13,12 +13,12 @@ import sbt._
 object Dependencies {
 
   object Version {
-    lazy val scalaTestVersion       = "3.0.5"
-    lazy val typeSafeConfigVersion  = "1.3.2"
+    lazy val scalaTestVersion       = "3.2.2"
+    lazy val typeSafeConfigVersion  = "1.4.1"
     lazy val logbackClassicVersion  = "1.2.3"
     lazy val scalaLogging           = "3.9.2"
-    lazy val akkaHttpVersion        = "10.1.7"
-    lazy val akkaVersion            = "2.5.21"
+    lazy val akkaHttpVersion        = "10.2.2"
+    lazy val akkaVersion            = "2.6.11"
   }
 
   // Testing

@@ -17,8 +17,7 @@ import com.typesafe.scalalogging.LazyLogging
 import scala.concurrent.ExecutionContext
 import scala.util.{Failure, Success}
 
-/**
-  * Akka routes that makes available the key-value store.
+/** Akka routes that makes available the key-value store.
   *
   * @param materializer       (implicit) The Akka actor materializer.
   * @param system             (implicit) The Akka actor system.
@@ -28,17 +27,17 @@ final class ShardRoutes(
   implicit val system: ActorSystem,
   implicit val materializer: ActorMaterializer,
   implicit val executionContext: ExecutionContext
-) extends RoutesProvider with Directives with LazyLogging {
+) extends RoutesProvider
+    with Directives
+    with LazyLogging {
 
   override def routes(): Route = healthRoute() ~ keyValueRoutes() ~ countRoutes()
 
-  /**
-    * The routes handler.
+  /** The routes handler.
     */
   private val handler: ShardResource = new ShardResource()
 
-  /**
-    * The `/key` endpoints.
+  /** The `/key` endpoints.
     * <ul>
     *   <li>`GET /key/<index>`: Returns the String value at `<index>` with HTTP 200. Returns HTTP 404 if not found.</li>
     *   <li>`SET /key/<index>`: Sets the body's content as the String value of `<index>`. Returns HTTP 200 if successful.</li>
@@ -50,12 +49,13 @@ final class ShardRoutes(
     get {
       onComplete(handler.getString(key)) {
         case Success(value) => complete(StatusCodes.OK -> value)
-        case Failure(exception) => exception match {
-          case KeyNotFoundException(_) => complete(StatusCodes.NotFound)
-          case e =>
-            logger.error(s"Unrecognized error when obtaining value for key $key", e)
-            complete(StatusCodes.InternalServerError)
-        }
+        case Failure(exception) =>
+          exception match {
+            case KeyNotFoundException(_) => complete(StatusCodes.NotFound)
+            case e =>
+              logger.error(s"Unrecognized error when obtaining value for key $key", e)
+              complete(StatusCodes.InternalServerError)
+          }
       }
     } ~ put {
       entity(as[String]) { value =>
@@ -69,8 +69,7 @@ final class ShardRoutes(
     }
   }
 
-  /**
-    * The `/count` endpoint.
+  /** The `/count` endpoint.
     * <ul>
     *   <li>`GET /count`: Returns the number of stored keys with HTTP 200.</li>
     * </ul>
@@ -88,8 +87,7 @@ final class ShardRoutes(
     }
   }
 
-  /**
-    * The `/health` endpoint. Always returns HTTP 200.
+  /** The `/health` endpoint. Always returns HTTP 200.
     * @return The `/health` endpoint.
     */
   def healthRoute(): Route =

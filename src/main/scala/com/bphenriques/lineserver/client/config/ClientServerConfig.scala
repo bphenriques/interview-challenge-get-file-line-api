@@ -19,8 +19,7 @@ import com.typesafe.config.Config
 import scala.concurrent.ExecutionContext
 import scala.util.Try
 
-/**
-  * Configuration of [[ClientServer]]
+/** Configuration of [[ClientServer]]
   *
   * @param binding            The akka http binding.
   * @param linesSupplier      Optional. The lines supplier.
@@ -32,15 +31,13 @@ final case class ClientServerConfig(
   linesManager: LinesManager
 )
 
-/**
-  * Companion class of [[ClientServerConfig]].
+/** Companion class of [[ClientServerConfig]].
   */
 object ClientServerConfig {
 
   import com.bphenriques.lineserver.common.enrichers.ConfigEnricher._
 
-  /**
-    * Creates an instance of [[ClientServerConfig]].
+  /** Creates an instance of [[ClientServerConfig]].
     *
     * @param conf             The configuration.
     * @param materializer     (implicit) The Akka actor materializer.
@@ -53,14 +50,13 @@ object ClientServerConfig {
     system: ActorSystem,
     executionContext: ExecutionContext
   ): Try[ClientServerConfig] = for {
-    httpConfig          <- conf.getConfig("http").read[ServerBindingConfig](ServerBindingConfig.from)
-    linesManagerConfig  <- conf.getConfig("manager.shards-round-robin").read[RoundRobinLinesManagerConfig](RoundRobinLinesManagerConfig.from)
+    httpConfig <- conf.getConfig("http").read[ServerBindingConfig](ServerBindingConfig.from)
+    linesManagerConfig <- conf
+      .getConfig("manager.shards-round-robin")
+      .read[RoundRobinLinesManagerConfig](RoundRobinLinesManagerConfig.from)
   } yield config.ClientServerConfig(
     httpConfig,
     Try(LinesInputSupplierFactory.from(conf.getConfig("input"))).toOption.map(_.get),
     new RoundRobinLinesManager(linesManagerConfig)
   )
 }
-
-
-

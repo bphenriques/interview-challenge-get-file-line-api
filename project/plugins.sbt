@@ -1,5 +1,7 @@
-// Add sbt task to run Scala linter.
-addSbtPlugin("org.scalastyle" %% "scalastyle-sbt-plugin" % "1.0.0")
+// Linter
+addSbtPlugin(
+  "org.scalameta" % "sbt-scalafmt" % "2.4.0"
+) // "2.4.0" is just sbt plugin version
 
 // Native packager.
 addSbtPlugin("com.typesafe.sbt" % "sbt-native-packager" % "1.3.19")

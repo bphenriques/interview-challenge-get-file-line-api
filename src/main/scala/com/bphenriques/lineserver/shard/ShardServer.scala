@@ -15,8 +15,7 @@ import com.bphenriques.lineserver.common.server._
 
 import scala.concurrent.ExecutionContext
 
-/**
-  * Creates a Shard server.
+/** Creates a Shard server.
   *
   * @param config             The configuration.
   * @param materializer       (implicit) The Akka actor materializer.

@@ -14,20 +14,17 @@ import com.typesafe.scalalogging.LazyLogging
 import scala.collection.mutable
 import scala.concurrent.{ExecutionContext, Future}
 
-/**
-  * Handles [[ShardRoutes]].
+/** Handles [[ShardRoutes]].
   *
   * @param executionContext The execution context.
   */
 final class ShardResource(implicit val executionContext: ExecutionContext) extends Shard with LazyLogging {
 
-  /**
-    * The set of lines stored in this shard.
+  /** The set of lines stored in this shard.
     */
   private val keyValueMap: mutable.Map[Int, String] = mutable.Map()
 
-  /**
-    * A write-lock to guard the keys.
+  /** A write-lock to guard the keys.
     *
     * FIXME: It is not required as there are no updates in this project's use-case.
     * This was required due to a unknown error where the count() is not consistent with set of keys stored.
