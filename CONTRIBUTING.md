@@ -17,7 +17,7 @@ The following sections briefly describe how to contribute to the project.
 To install the project, execute the following command in the root of the project:
 
 ```
-$ ./build.sh
+$ make docker-build
 ```
 
 This builds and installs the following Docker images in your local Docker registry: `lineserver:latest` and 
@@ -25,10 +25,10 @@ This builds and installs the following Docker images in your local Docker regist
 
 To run the project execute the following command in the root of the project:
 ```
-$ ./run <file-location>
+$ FILE=<file-location> make start
 ```
 
-Where `<file-location>` is the location of the file that is going to be available in the server.
+Where `<file-location>` is the full path to the file that is going to be available in the server.
 
 This command will launch a server with 2 clients, 2 shards and one load balancer. The server will be ready once the
 load balancer starts. You can always check the logs by running `docker logs -f client-primary`.
@@ -68,7 +68,7 @@ Positive:
 * Simple system design that allows scaling both vertical and horizontal the system to accommodate either bigger files
   or more clients.
 * Capability of launching either a shard or a client from the same application by changing the configuration file.
-* Lines Supplier Abstraction (in package `com.salsify.lineserver.client.input`) that allows extending the system to 
+* Lines Supplier Abstraction (in package `com.bphenriques.lineserver.client.input`) that allows extending the system to 
   support, for example, obtaining lines from a file stored in a AWS S3 bucket.
 * Usage of cache in the `client` to avoid expensive network requests to a `shard`.
 * Backpressure queue (see `ShardHttpClient`) to handle spikes.

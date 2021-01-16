@@ -20,6 +20,6 @@ test:
 docker-build:
 	sbt docker:publishLocal
 
-# Start the line server.
+# Start the line server. Use FILE=<path> make start
 start:
 	cd docker && docker-compose up
