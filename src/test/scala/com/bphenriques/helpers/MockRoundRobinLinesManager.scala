@@ -8,7 +8,6 @@
 package com.bphenriques.helpers
 
 import akka.actor.ActorSystem
-import akka.stream.ActorMaterializer
 import com.bphenriques.lineserver.client.manager.LinesManager
 import com.bphenriques.lineserver.shard.Shard
 
@@ -18,12 +17,10 @@ import scala.concurrent.{ExecutionContext, Future}
   * Simulates an in-memory cluster using [[MockShardHttpClient]].
   *
   * @param numberOfShards   The number of shards.
-  * @param materializer     (implicit) The Akka actor materializer.
   * @param system           (implicit) The Akka actor system.
   * @param executionContext (implicit) The execution context.
   */
 class MockRoundRobinLinesManager(numberOfShards: Int)(
-  implicit val materializer: ActorMaterializer,
   implicit val system: ActorSystem,
   implicit val executionContext: ExecutionContext
 ) extends LinesManager {

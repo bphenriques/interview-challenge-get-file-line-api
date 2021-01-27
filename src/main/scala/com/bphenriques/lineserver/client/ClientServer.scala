@@ -18,13 +18,11 @@ import scala.concurrent.{ExecutionContext, Future}
 /** Creates a Client server.
   *
   * @param config             The configuration.
-  * @param materializer       (implicit) The Akka actor materializer.
   * @param system             (implicit) The Akka actor system.
   * @param executionContext   (implicit) The execution context.
   */
 final class ClientServer(config: ClientServerConfig)(
   implicit val system: ActorSystem,
-  implicit val materializer: ActorMaterializer,
   implicit val executionContext: ExecutionContext
 ) extends Server {
 
@@ -47,7 +45,7 @@ final class ClientServer(config: ClientServerConfig)(
         // Atomic counter to have a consistent progress counter.
         val processedLines: AtomicReference[Int] = new AtomicReference[Int](0)
         val linesUpload: Seq[Future[Unit]] = linesSupplier
-          .getLines()
+          .readLines()
           .map { line =>
             config.linesManager
               .setString(line.index, line.content)

@@ -23,7 +23,6 @@ final case class RoundRobinLinesManagerConfig(shards: List[ShardHttpClientConfig
 object RoundRobinLinesManagerConfig {
 
   import com.bphenriques.lineserver.common.enrichers.ConfigEnricher._
-
   import scala.collection.JavaConverters._
 
   /** Creates an instance of [[RoundRobinLinesManagerConfig]].

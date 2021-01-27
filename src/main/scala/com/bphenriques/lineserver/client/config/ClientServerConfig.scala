@@ -7,10 +7,9 @@
 package com.bphenriques.lineserver.client.config
 
 import akka.actor.ActorSystem
-import akka.stream.ActorMaterializer
 import com.bphenriques.lineserver.client.{ClientServer, config}
-import com.bphenriques.lineserver.client.input.{LinesInputSupplier, LinesInputSupplierFactory}
-import com.bphenriques.lineserver.client.manager.{LinesManager, RoundRobinLinesManager, RoundRobinLinesManagerConfig}
+import com.bphenriques.lineserver.client.input.LinesInputSupplier
+import com.bphenriques.lineserver.client.manager.{LinesManager, RoundRobinLinesManagerConfig}
 import com.bphenriques.lineserver.common.config.ServerBindingConfig
 import com.bphenriques.lineserver.client.input.LinesInputSupplierFactory
 import com.bphenriques.lineserver.client.manager.RoundRobinLinesManager
@@ -40,13 +39,11 @@ object ClientServerConfig {
   /** Creates an instance of [[ClientServerConfig]].
     *
     * @param conf             The configuration.
-    * @param materializer     (implicit) The Akka actor materializer.
     * @param system           (implicit) The Akka actor system.
     * @param executionContext (implicit) The execution context.
     * @return An instance of [[ClientServerConfig]].
     */
   def from(conf: Config)(implicit
-    materializer: ActorMaterializer,
     system: ActorSystem,
     executionContext: ExecutionContext
   ): Try[ClientServerConfig] = for {

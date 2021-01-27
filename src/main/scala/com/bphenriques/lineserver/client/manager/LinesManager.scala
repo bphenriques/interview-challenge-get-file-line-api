@@ -6,7 +6,6 @@
 
 package com.bphenriques.lineserver.client.manager
 
-import com.bphenriques.lineserver.shard.Shard
 import com.bphenriques.lineserver.shard.exception.KeyNotFoundException
 import com.bphenriques.lineserver.shard.Shard
 

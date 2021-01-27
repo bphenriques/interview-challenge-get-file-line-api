@@ -6,7 +6,7 @@ This project is developed in Scala and [scala-sbt](https://www.scala-sbt.org/) a
 
 * Java 11
 * Sbt 1.4.5.
-* Scala 2.13.4.
+* Scala 2.12.13.
 * Docker
 
 ### Development Guide

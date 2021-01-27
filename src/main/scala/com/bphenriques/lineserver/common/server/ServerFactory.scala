@@ -7,7 +7,6 @@
 package com.bphenriques.lineserver.common.server
 
 import akka.actor.ActorSystem
-import akka.stream.ActorMaterializer
 import com.bphenriques.lineserver.client.ClientServer
 import com.bphenriques.lineserver.client.config.ClientServerConfig
 import com.bphenriques.lineserver.common.exception.LineServerConfigException
@@ -27,14 +26,13 @@ object ServerFactory {
   /** Creates an instance of [[Server]] given a [[Config]].
     *
     * @param conf             The configuration.
-    * @param materializer     (implicit) The Akka actor materializer.
     * @param system           (implicit) The Akka actor system.
     * @param executionContext (implicit) The execution context.
     * @return An instance of [[Server]].
     */
   def from(
     conf: Config
-  )(implicit materializer: ActorMaterializer, system: ActorSystem, executionContext: ExecutionContext): Try[Server] =
+  )(implicit system: ActorSystem, executionContext: ExecutionContext): Try[Server] =
     Try {
       conf.getString("type") match {
         case "client" =>

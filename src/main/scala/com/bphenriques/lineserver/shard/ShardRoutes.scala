@@ -9,7 +9,6 @@ package com.bphenriques.lineserver.shard
 import akka.actor.ActorSystem
 import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.server.{Directives, Route}
-import akka.stream.ActorMaterializer
 import com.bphenriques.lineserver.common.server.RoutesProvider
 import com.bphenriques.lineserver.shard.exception.KeyNotFoundException
 import com.typesafe.scalalogging.LazyLogging
@@ -19,13 +18,11 @@ import scala.util.{Failure, Success}
 
 /** Akka routes that makes available the key-value store.
   *
-  * @param materializer       (implicit) The Akka actor materializer.
   * @param system             (implicit) The Akka actor system.
   * @param executionContext   (implicit) The execution context.
   */
 final class ShardRoutes(
   implicit val system: ActorSystem,
-  implicit val materializer: ActorMaterializer,
   implicit val executionContext: ExecutionContext
 ) extends RoutesProvider
     with Directives

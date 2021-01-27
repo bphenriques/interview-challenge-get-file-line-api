@@ -7,7 +7,6 @@
 package com.bphenriques.lineserver
 
 import akka.actor.ActorSystem
-import akka.stream.ActorMaterializer
 import com.bphenriques.lineserver.config.AppConfig
 import com.typesafe.config.ConfigFactory
 import com.typesafe.scalalogging.LazyLogging
@@ -38,10 +37,6 @@ trait Application {
   /** The Akka actor system.
     */
   implicit val system: ActorSystem = ActorSystem("LineServer")
-
-  /** The Akka actor materializer.
-    */
-  implicit val materializer: ActorMaterializer = ActorMaterializer()
 
   /** The execution context.
     */

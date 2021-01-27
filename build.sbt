@@ -2,7 +2,7 @@ import Dependencies._
 import com.typesafe.sbt.packager.archetypes.scripts.BashStartScriptPlugin.autoImport.bashScriptExtraDefines
 import sbt.Keys.libraryDependencies
 
-ThisBuild / scalaVersion     := "2.13.4"
+ThisBuild / scalaVersion     := "2.12.13"
 ThisBuild / organization     := "com.bphenriques"
 ThisBuild / name             := "lineserver"
 ThisBuild / version          := "0.1.0-SNAPSHOT"

@@ -11,7 +11,7 @@ import akka.http.scaladsl.Http
 import akka.http.scaladsl.model._
 import akka.http.scaladsl.unmarshalling.Unmarshal
 import akka.stream.scaladsl.{Keep, Sink, Source}
-import akka.stream.{ActorMaterializer, OverflowStrategy, QueueOfferResult}
+import akka.stream.{OverflowStrategy, QueueOfferResult}
 import com.bphenriques.lineserver.client.exception.ShardHttpClientException
 import com.bphenriques.lineserver.shard.Shard
 import com.typesafe.scalalogging.LazyLogging
@@ -22,12 +22,10 @@ import scala.util.{Failure, Success}
 /** Shard Http client.
   *
   * @param config           The configuration.
-  * @param materializer     (implicit) The Akka actor materializer.
   * @param system           (implicit) The Akka actor system.
   * @param executionContext (implicit) The execution context.
   */
 class ShardHttpClient(config: ShardHttpClientConfig)(
-  implicit val materializer: ActorMaterializer,
   implicit val system: ActorSystem,
   implicit val executionContext: ExecutionContext
 ) extends Shard

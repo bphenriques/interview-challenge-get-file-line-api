@@ -7,8 +7,7 @@
 package com.bphenriques.lineserver.config
 
 import akka.actor.ActorSystem
-import akka.stream.ActorMaterializer
-import com.bphenriques.lineserver.common.server.{Server, ServerFactory}
+import com.bphenriques.lineserver.common.server.ServerFactory
 import com.bphenriques.lineserver.config
 import com.bphenriques.lineserver.common.server.Server
 import com.typesafe.config.Config
@@ -36,7 +35,7 @@ object AppConfig {
     */
   def from(
     conf: Config
-  )(implicit materializer: ActorMaterializer, system: ActorSystem, executionContext: ExecutionContext): Try[AppConfig] =
+  )(implicit system: ActorSystem, executionContext: ExecutionContext): Try[AppConfig] =
     for {
       server <- ServerFactory.from(conf)
     } yield config.AppConfig(server)

@@ -14,8 +14,9 @@ import com.bphenriques.lineserver.client.manager.ShardHttpClient
 import com.bphenriques.lineserver.shard.Shard
 import com.bphenriques.lineserver.client.input.strategies.LocalFileLinesInputSupplierConfig
 import org.scalatest.concurrent.ScalaFutures
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 import org.scalatest.prop.TableDrivenPropertyChecks
-import org.scalatest.{FlatSpec, Matchers}
 
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, ExecutionContext, Future}
@@ -23,7 +24,7 @@ import scala.concurrent.{Await, ExecutionContext, Future}
 /**
   * Provides boiler plate code to streamline unit tests.
   */
-class BaseSpec extends FlatSpec with Matchers with TableDrivenPropertyChecks with ScalaFutures with ScalatestRouteTest {
+class BaseSpec extends AnyFlatSpec with Matchers with TableDrivenPropertyChecks with ScalaFutures with ScalatestRouteTest {
 
   /**
     * The execution context. Renaming because implicits require it.
@@ -42,7 +43,7 @@ class BaseSpec extends FlatSpec with Matchers with TableDrivenPropertyChecks wit
 
     if (file.isDefined) {
       val linesProvider = LocalFileLinesInputSupplier(LocalFileLinesInputSupplierConfig(file.get))
-      val insert = linesProvider.getLines().map(l => cluster.setString(l.index, l.content))
+      val insert = linesProvider.readLines().map(l => cluster.setString(l.index, l.content))
       Await.result(Future.sequence(insert), Duration.Inf)
     }
     cluster

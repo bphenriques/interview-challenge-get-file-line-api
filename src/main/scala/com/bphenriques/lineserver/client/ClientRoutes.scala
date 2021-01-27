@@ -11,7 +11,6 @@ import akka.http.caching.scaladsl.Cache
 import akka.http.scaladsl.server.directives.CachingDirectives._
 import akka.http.scaladsl.model.{ContentTypes, HttpEntity, StatusCodes, Uri}
 import akka.http.scaladsl.server.{Directives, RequestContext, Route, RouteResult}
-import akka.stream.ActorMaterializer
 import com.bphenriques.lineserver.client.exception.LineNotFoundException
 import com.bphenriques.lineserver.client.manager.LinesManager
 import com.bphenriques.lineserver.common.server.RoutesProvider
@@ -23,13 +22,11 @@ import scala.util.{Failure, Success}
 /** Main Akka routes that publicly makes available the lines.
   *
   * @param linesManager       The lines manager.
-  * @param materializer       (implicit) The Akka actor materializer.
   * @param system             (implicit) The Akka actor system.
   * @param executionContext   (implicit) The execution context.
   */
 final class ClientRoutes(linesManager: LinesManager)(
   implicit val system: ActorSystem,
-  implicit val materializer: ActorMaterializer,
   implicit val executionContext: ExecutionContext
 ) extends RoutesProvider
     with Directives
@@ -66,7 +63,7 @@ final class ClientRoutes(linesManager: LinesManager)(
             case Success(line) => complete(HttpEntity(ContentTypes.`text/html(UTF-8)`, line))
             case Failure(exception) =>
               exception match {
-                case LineNotFoundException(_) => complete(StatusCodes.RequestEntityTooLarge, exception.getMessage)
+                case LineNotFoundException(_) => complete(StatusCodes.NotFound, exception.getMessage)
                 case e =>
                   logger.error(s"Unrecognized error while getting line $lineIndex", e)
                   complete(StatusCodes.InternalServerError, s"An error occurred: ${e.getMessage}")

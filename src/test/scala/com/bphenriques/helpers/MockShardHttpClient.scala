@@ -8,8 +8,7 @@
 package com.bphenriques.helpers
 
 import akka.actor.ActorSystem
-import akka.stream.ActorMaterializer
-import com.bphenriques.lineserver.shard.{Shard, ShardResource}
+import com.bphenriques.lineserver.shard.ShardResource
 import com.bphenriques.lineserver.shard.Shard
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -19,12 +18,10 @@ import scala.concurrent.{ExecutionContext, Future}
   *
   * @param host             The host.
   * @param port             The port.
-  * @param materializer     (implicit) The Akka actor materializer.
   * @param system           (implicit) The Akka actor system.
   * @param executionContext (implicit) The execution context.
   */
 class MockShardHttpClient(host: String, port: Int)(
-  implicit val materializer: ActorMaterializer,
   implicit val system: ActorSystem,
   implicit val executionContext: ExecutionContext
 ) extends Shard {

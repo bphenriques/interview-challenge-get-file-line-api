@@ -29,7 +29,7 @@ class LocalFileLinesInputSupplierSpec extends BaseSpec {
       val supplier = LocalFileLinesInputSupplier(LocalFileLinesInputSupplierConfig(file))
       supplier.size shouldEqual expectedLines.size
 
-      val lines = supplier.getLines()
+      val lines = supplier.readLines().toList
       lines.size shouldEqual lines.size
       lines shouldEqual expectedLines
     }

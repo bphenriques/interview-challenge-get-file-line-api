@@ -16,6 +16,6 @@ object IteratorEnricher {
       * @param start The starting index.
       * @return The stream of pairs `([[T]], index)`.
       */
-    def zipWithIndex(start: Int): Iterator[(T, Int)] = iterator.zip(Stream.from(start).toIterator)
+    def zipWithIndex(start: Int): Iterator[(T, Int)] = iterator.zip(Iterator.from(start))
   }
 }

@@ -18,7 +18,7 @@ import scala.util.Try
   * @see https://en.wikipedia.org/wiki/List_of_TCP_and_UDP_port_numbers
   */
 final case class ShardHttpClientConfig(host: String, port: Int, queueSize: Int) {
-  require(host.trim.length > 0, "The must be non-empty")
+  require(host.trim.nonEmpty, "The must be non-empty")
   require(host.startsWith("http://"), "The host must start with http://")
   require(port > 1023 && port <= 65535, "The port must be between 1023 and 65535")
   require(queueSize > 0, "The requests queue should be greater or equal to zero")

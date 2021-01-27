@@ -9,8 +9,6 @@ package com.bphenriques.lineserver.common.server
 import akka.Done
 import akka.actor.{ActorSystem, CoordinatedShutdown}
 import akka.http.scaladsl.Http
-import akka.http.scaladsl.server.Route
-import akka.stream.ActorMaterializer
 import com.typesafe.scalalogging.LazyLogging
 
 import scala.concurrent.duration.{Duration, _}
@@ -31,7 +29,6 @@ import scala.util.{Failure, Success, Try}
 trait Server extends LazyLogging {
 
   implicit val system: ActorSystem
-  implicit val materializer: ActorMaterializer
   implicit val executionContext: ExecutionContext
 
   def host: String

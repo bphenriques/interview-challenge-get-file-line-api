@@ -7,7 +7,6 @@
 package com.bphenriques.lineserver.client.manager
 
 import akka.actor.ActorSystem
-import akka.stream.ActorMaterializer
 import com.bphenriques.lineserver.shard.Shard
 import com.typesafe.scalalogging.LazyLogging
 
@@ -18,12 +17,10 @@ import scala.concurrent.{ExecutionContext, Future}
   * Invariant: The number of shards is always greater than 0.
   *
   * @param config           The configuration.
-  * @param materializer     (implicit) The Akka actor materializer.
   * @param system           (implicit) The Akka actor system.
   * @param executionContext (implicit) The execution context.
   */
 class RoundRobinLinesManager(config: RoundRobinLinesManagerConfig)(
-  implicit val materializer: ActorMaterializer,
   implicit val system: ActorSystem,
   implicit val executionContext: ExecutionContext
 ) extends LinesManager

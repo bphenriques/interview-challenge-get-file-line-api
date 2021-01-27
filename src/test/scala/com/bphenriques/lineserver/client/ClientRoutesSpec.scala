@@ -22,24 +22,24 @@ class ClientRoutesSpec extends BaseSpec {
     }
   }
 
-  it must "return HTTP 413 with lines out of range" in {
+  it must "return HTTP 404 when the line is larger than the ones available" in {
     val rows = Table("Line Number", 0, 6)
 
     val route = new ClientRoutes(createCluster(3, Some(getResource("sample.txt"))))
     forAll (rows) { lineNumber: Int =>
       Get(s"/lines/$lineNumber") ~> route.linesRoutes() ~> check {
-        status shouldEqual StatusCodes.RequestEntityTooLarge
+        status shouldEqual StatusCodes.NotFound
       }
     }
   }
 
-  it must "return HTTP 413 on line 1 with an empty file" in {
+  it must "return HTTP 404 on line 1 with an empty file" in {
     val rows = Table("Line Number", 0, 1)
 
     val route = new ClientRoutes(createCluster(3, Some(getResource("empty.txt"))))
     forAll (rows) { lineNumber: Int =>
       Get(s"/lines/$lineNumber") ~> route.linesRoutes() ~> check {
-        status shouldEqual StatusCodes.RequestEntityTooLarge
+        status shouldEqual StatusCodes.NotFound
       }
     }
   }

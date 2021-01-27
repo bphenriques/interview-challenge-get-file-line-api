@@ -20,23 +20,23 @@ final class LocalFileLinesInputSupplier(val config: LocalFileLinesInputSupplierC
     extends LinesInputSupplier
     with LazyLogging {
 
-  /** Returns a lazy stream of [[Line]].
-    */
-  override def getLines(): Seq[Line] = {
+  private val source = Source.fromFile(config.file)
+
+  override def readLines(): Seq[Line] = {
     logger.info(s"Reading '${config.file.getAbsolutePath}' ...")
 
-    import com.bphenriques.lineserver.common.enrichers.IteratorEnricher._
 
     // By requirement, the file is in ASCII. By default, the reader reads from UTF-8 which is a *super set* of ASCII.
-    Source
-      .fromFile(config.file)
-      .getLines()
+    import com.bphenriques.lineserver.common.enrichers.IteratorEnricher._
+    source.getLines()
       .zipWithIndex(1)
       .map { case (line, lineNumber) => Line(lineNumber, line) }
-      .toStream // getLines() is already lazy. This is to conform to the method signature.
+      .toStream // Is already lazy. This is to conform to the method signature.
   }
 
   override def toString: String = s"LocalFileLineSupplier('${config.file.getAbsolutePath})"
+
+  override def close(): Unit = source.close()
 }
 
 /** Companion object of [[LocalFileLinesInputSupplier]].
