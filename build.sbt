@@ -7,7 +7,7 @@ ThisBuild / organization     := "com.bphenriques"
 ThisBuild / name             := "lineserver"
 ThisBuild / version          := "0.1.0-SNAPSHOT"
 ThisBuild / organizationName := "bphenriques"
-ThisBuild / maintainer       := "bphenriques@outlook.com"
+ThisBuild / maintainer       := "4727729+bphenriques@users.noreply.github.com>"
 
 // Name of simulator configuration file.
 lazy val ConfigurationFile = "application.conf"

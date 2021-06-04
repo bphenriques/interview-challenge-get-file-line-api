@@ -21,7 +21,7 @@ class LocalFileLinesInputSupplierSpec extends BaseSpec {
     val rows = Table(
       ("File", "Expected Lines"),
       (getResource("empty.txt"), Seq()),
-      (getResource("empty-line.txt"), Seq(Line(1, ""))),
+      (getResource("empty-line.txt"), Seq(Line(1, ""), Line(2, ""))),
       (getResource("sample.txt"), Seq(Line(1, "Line 1"), Line(2, "Line 2"), Line(3, "Line 3"), Line(4, "Line 4"), Line(5, "Line 5")))
     )
 

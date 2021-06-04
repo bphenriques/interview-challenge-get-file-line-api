@@ -1,10 +1,17 @@
-Project made in 2017
+<p align="center">
+  <img src="https://github.com/bphenriques-lab/get-file-line-api-challenge/actions/workflows/build.yaml/badge.svg" />
+  <img alt="Scala" src="https://img.shields.io/static/v1?style=flat-square&logo=Scala&label=&message=Scala&color=gray">
+  <img alt="Docker" src="https://img.shields.io/static/v1?style=flat-square&logo=Docker&label=&message=Docker&color=gray">
+</p>
+
+Project made in 2017 with a minor review in 2021.
 
 Some thoughts in 2021 and I may address because I had fun in this project:
 - Organize a bit the project to have the project structure reflect a bit the deployment structure.
 - Review tests.
 - Review some parts now that I know a bit more about Akka.
 - Today I frown upon the way the Docker image is being built as I seem to lose control. I might revisit.
+- Many other things, for now. Just reviewed a bit the main code. Not going to bump the project.
 
 ---
 # Specification

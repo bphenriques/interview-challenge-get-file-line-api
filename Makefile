@@ -17,7 +17,6 @@ lint:
 lintFormat:
 	sbt scalafmt
 
-
 # Unit tests.
 test:
 	sbt test

@@ -24,5 +24,5 @@ trait LinesInputSupplier extends AutoCloseable {
     *
     * @return The number of lines in the file.
     */
-  def size: Int = readLines().size
+  def size: Int
 }

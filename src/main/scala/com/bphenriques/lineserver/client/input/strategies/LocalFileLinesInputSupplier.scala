@@ -25,7 +25,6 @@ final class LocalFileLinesInputSupplier(val config: LocalFileLinesInputSupplierC
   override def readLines(): Seq[Line] = {
     logger.info(s"Reading '${config.file.getAbsolutePath}' ...")
 
-
     // By requirement, the file is in ASCII. By default, the reader reads from UTF-8 which is a *super set* of ASCII.
     import com.bphenriques.lineserver.common.enrichers.IteratorEnricher._
     source.getLines()
@@ -37,6 +36,13 @@ final class LocalFileLinesInputSupplier(val config: LocalFileLinesInputSupplierC
   override def toString: String = s"LocalFileLineSupplier('${config.file.getAbsolutePath})"
 
   override def close(): Unit = source.close()
+
+  override def size: Int = {
+    val source = Source.fromFile(config.file) // Can't read the lines without consuming the source. Just want to peek at the file.
+    val result = source.getLines().size
+    source.close()
+    result
+  }
 }
 
 /** Companion object of [[LocalFileLinesInputSupplier]].
