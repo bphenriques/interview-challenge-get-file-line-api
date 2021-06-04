@@ -11,6 +11,9 @@ Some thoughts in 2021 and I may address because I had fun in this project:
 - Review tests.
 - Review some parts now that I know a bit more about Akka.
 - Today I frown upon the way the Docker image is being built as I seem to lose control. I might revisit.
+- Explore a more simplistic approach which a mere single server reading from a local file and, to optimize
+  accesses, have a map from line to a range of memory in the file (sort of speech... need to R&D this...). Not as performant
+  but it might be good enough.
 - Many other things, for now. Just reviewed a bit the main code. Not going to bump the project.
 
 ---
